@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5863LJ7H');</script>
+<!-- End Google Tag Manager -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ソウル地下鉄マップ｜ルート検索つき</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;color:#1c2430;background:#f4f6f9;margin:0;padding:20px 14px 40px}
+h1{font-size:21px;margin:0 auto 14px;max-width:1280px;text-align:center}
+.layout{display:flex;gap:14px;align-items:flex-start;justify-content:center;max-width:1280px;margin:0 auto}
+.mapcard{flex:1;background:#fff;border:1px solid #d8dee8;border-radius:14px;padding:12px;min-width:0}
+.panel{width:330px;flex:none;background:#fff;border:1px solid #d8dee8;border-radius:14px;padding:16px}
+.panel h2{font-size:15px;margin:0 0 10px}
+.panel label{font-size:12px;color:#5a6a7d;display:block;margin:10px 0 4px}
+.panel select{width:100%;font-size:14px;padding:9px;border:1px solid #c4cedd;border-radius:9px;background:#fff}
+.selnums{margin-top:5px;min-height:22px}
+.selnums .lbl2{font-size:11px;color:#8a97a8;margin-right:2px}
+.swap{margin-top:8px;width:100%;font-size:12.5px;padding:7px;border:1px solid #c4cedd;background:#fff;border-radius:9px;cursor:pointer}
+.result{margin-top:16px}
+.routeband{background:#14548c;color:#fff;font-size:22px;font-weight:800;letter-spacing:.14em;padding:9px 16px;margin:0 -16px 12px}
+.result .time{font-size:22px;font-weight:800}
+.result .meta{font-size:12.5px;color:#5a6a7d;margin:2px 0 10px}
+.step{border:1px solid #e3e8f0;border-radius:10px;padding:9px 11px;margin-bottom:8px;font-size:13px;line-height:1.55}
+.step .ln{font-weight:800;color:#fff;border-radius:6px;padding:1px 8px;font-size:12px;display:inline-block;margin-bottom:3px}
+.step .tr{font-weight:700}
+.stmark{display:inline-block;border:1.6px solid #999;border-radius:7px;padding:0 6px;margin:1px 0;line-height:1.55}
+.stmark.dep{border-color:#1668b4;background:#eaf3fb}
+.stmark.arr{border-color:#e0312a;background:#fdecea}
+.stmark.tr{border:2px dashed #e07b00;background:#fff4e0}
+.tag{display:inline-block;font-size:10.5px;font-weight:800;color:#fff;border-radius:5px;padding:1px 7px;margin-right:5px;vertical-align:2px;letter-spacing:.05em}
+.tag.dep{background:#1668b4}
+.tag.arr{background:#e0312a}
+.step.trstep{border:2px dashed #e07b00;background:#fff8ec}
+.rlegend{font-size:11.5px;color:#5a6a7d;margin:0 0 10px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.rlegend .cap{font-weight:700;color:#8a97a8}
+.no{display:inline-block;color:#fff;font-size:11px;font-weight:800;border-radius:99px;padding:0 7px;margin-left:5px;vertical-align:1px}
+.hg2{color:#6b7889;font-size:12.5px;font-weight:600;margin-left:5px}
+.result .tlist{font-size:13px;line-height:1.7}
+.result .tlist b{color:#1668b4}
+.areabox{margin-top:14px;border:1px solid #e3e8f0;border-left:7px solid #ccc;border-radius:10px;padding:11px 13px;background:#fbfcfe}
+.areabox img.aimg{width:100%;height:150px;object-fit:cover;border-radius:8px;display:block;margin-bottom:9px;background:#e8edf3}
+.areabox .ttl{font-size:11.5px;font-weight:700;color:#8a97a8;letter-spacing:.06em}
+.areabox .an2{font-size:16.5px;font-weight:800;margin:2px 0 1px}
+.areabox .an2 span{font-size:12px;font-weight:600;color:#1668b4;margin-left:5px}
+.areabox .at{font-size:12.5px;color:#5a6a7d;margin-bottom:7px}
+.areabox ul{margin:0;padding-left:17px;font-size:13px;line-height:1.75}
+.empty{font-size:13px;color:#5a6a7d;line-height:1.6}
+.searchwrap{position:relative}
+.searchwrap input{width:100%;font-size:14px;padding:9px;border:1px solid #c4cedd;border-radius:9px;background:#fff;color:#1c2430}
+.candlist{position:absolute;left:0;right:0;top:calc(100% + 4px);background:#fff;border:1px solid #c4cedd;border-radius:9px;box-shadow:0 10px 26px rgba(20,40,70,.20);z-index:30;max-height:308px;overflow:auto}
+.candlist button{display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid #eef1f6;padding:8px 10px;font-size:13.5px;color:#1c2430;cursor:pointer}
+.candlist button:last-child{border-bottom:none}
+.candlist button:hover,.candlist button.active{background:#fdeef6}
+.candlist .none{padding:9px 10px;font-size:13px;color:#5a6a7d}
+.searchact{margin-top:8px;border:2px solid #e0218a;background:#fdf0f7;border-radius:10px;padding:8px 10px}
+.searchact .foundname{font-size:14px;font-weight:700;margin-bottom:6px}
+.searchact .foundbtns{display:flex;gap:6px;flex-wrap:wrap}
+.searchact .foundbtns button{font-size:12.5px;font-weight:700;padding:6px 10px;border:1px solid #c4cedd;background:#fff;border-radius:8px;cursor:pointer;color:#1c2430}
+.panel h2.sec2{margin-top:18px}
+.toolbar{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
+.toolbar button{font-size:14px;font-weight:700;border:1px solid #c4cedd;background:#fff;border-radius:9px;padding:6px 12px;cursor:pointer}
+.toolbar .info{font-size:12px;color:#5a6a7d}
+.mapbox{border:1px solid #d8dee8;border-radius:12px;overflow:hidden;background:#fdfefb;display:flex;justify-content:center;align-items:center}
+svg#map{width:100%;height:auto;display:block;touch-action:none;cursor:grab;margin:0 auto}
+svg#map.dragging{cursor:grabbing}
+.jn{font-size:20px;font-weight:800;fill:#1c2430;paint-order:stroke;stroke:#fff;stroke-width:4.5px}
+.kk{font-size:16px;font-weight:600;fill:#1668b4;paint-order:stroke;stroke:#fff;stroke-width:4px}
+.hg{font-size:13.5px;font-weight:600;fill:#6b7889;paint-order:stroke;stroke:#fff;stroke-width:4px}
+.bd{font-size:10.5px;font-weight:800;fill:#fff}
+svg[data-tier="0"] .lvl2 .lbl,svg[data-tier="0"] .lvl3 .lbl{display:none}
+svg[data-tier="1"] .lvl3 .lbl{display:none}
+svg[data-tier="0"] .lvl2.routehl .lbl,svg[data-tier="0"] .lvl3.routehl .lbl,svg[data-tier="1"] .lvl3.routehl .lbl{display:block}
+.area .an{font-size:19px;font-weight:800;fill:#1c2430}
+.area .ak{font-size:15px;font-weight:600;fill:#1668b4}
+.area .ao{font-size:15px;fill:#3c4a5c}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;justify-content:center}
+.lg{font-size:11.5px;color:#fff;border-radius:99px;padding:3px 10px;font-weight:700}
+.foot{max-width:1280px;margin:8px auto 0;font-size:11.5px;color:#8a97a8;text-align:center}
+@media (max-width:860px){.layout{flex-direction:column;align-items:center}.mapcard{width:100%}.panel{width:100%}}
+@media (orientation:landscape) and (max-height:540px){
+  body{padding:10px 10px 24px}
+  h1{font-size:17px;margin-bottom:8px}
+  .layout{flex-direction:column;align-items:center}
+  .panel{width:100%}
+  .mapbox svg{height:calc(100dvh - 150px);width:auto;max-width:100%;margin:0 auto}
+}
+</style>
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5863LJ7H"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+<h1>ソウル地下鉄マップ</h1>
+<div class="layout">
+  <div class="mapcard">
+    <div class="toolbar">
+      <button id="zin" type="button">＋ 拡大</button>
+      <button id="zout" type="button">－ 縮小</button>
+      <button id="zreset" type="button">全体表示</button>
+      <span class="info" id="zinfo"></span>
+    </div>
+    <div class="mapbox">
+    <svg id="map" data-tier="0" viewBox="0 0 2240 1697" role="img" aria-label="ソウル地下鉄簡略路線図">
+      <g id="vp">
+        <g transform="rotate(2 1098 893)">
+          <rect x="-80" y="867" width="2460" height="52" fill="#9fd3e8"/>
+          <text x="1098" y="901" text-anchor="middle" font-size="16" font-weight="700" letter-spacing="8" fill="#175d78">漢 江</text>
+        </g>
+        <g id="lines"></g>
+        <polyline id="routepath" fill="none" stroke="#ff3b30" stroke-width="18" stroke-opacity="0.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" style="display:none"/>
+        <g id="areas"></g>
+        <g id="markers"></g>
+        <g id="badges"></g>
+        <g id="labels"></g>
+        <g id="frontlayer">
+          <g id="frontmarkers"></g>
+          <g id="frontmarks"></g>
+          <g id="frontbadges"></g>
+          <g id="frontlabels"></g>
+          <g id="searchmark"></g>
+        </g>
+      </g>
+    </svg>
+    </div>
+    <div class="legend">
+      <span class="lg" style="background:#0052A4">1号線</span>
+      <span class="lg" style="background:#00A84D">2号線（環状）</span>
+      <span class="lg" style="background:#EF7C1C">3号線</span>
+      <span class="lg" style="background:#00A5DE">4号線</span>
+      <span class="lg" style="background:#996CAC">5号線</span>
+      <span class="lg" style="background:#CD7C2F">6号線</span>
+      <span class="lg" style="background:#747F00">7号線</span>
+      <span class="lg" style="background:#BDB092;color:#333">9号線</span>
+      <span class="lg" style="background:#0090D2">AREX（空港鉄道）</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>駅を探す</h2>
+    <div class="searchwrap">
+      <input id="stsearch" type="text" placeholder="駅名・読み・한글 で検索（例：みょんどん）" autocomplete="off" aria-label="駅名検索">
+      <div class="candlist" id="candlist" hidden></div>
+    </div>
+    <div class="searchact" id="searchact" hidden>
+      <div class="foundname" id="foundname"></div>
+      <div class="foundbtns">
+        <button type="button" id="setfrom">出発に設定</button>
+        <button type="button" id="setto">到着に設定</button>
+        <button type="button" id="clearhl">ハイライト解除</button>
+      </div>
+    </div>
+    <h2 class="sec2">ルート検索</h2>
+    <label for="from">現在駅（出発）</label>
+    <select id="from"></select>
+    <div class="selnums" id="fromNums"></div>
+    <label for="to">行きたい駅（到着）</label>
+    <select id="to"></select>
+    <div class="selnums" id="toNums"></div>
+    <button class="swap" id="swap" type="button">⇅ 出発と到着を入れ替え</button>
+    <div class="result" id="result">
+      <div class="routeband">ルート</div>
+      <div class="empty">駅を選ぶと、路線・所要時間・乗り換え駅がここに表示され、マップ上で導線が光ります。</div>
+    </div>
+  </div>
+</div>
+<p class="foot">※ 主要駅を中心とした簡略版です。所要時間は目安（駅間約2分＋乗り換え約5分で計算）。</p>
+
+<script>
+const VW=2240, VH=1697;
+const ST = {
+/* AREX */
+ incheon2:{x:64,y:1633,hg:"인천공항2터미널",kk:"インチョンゴンハン",lvl:2,ax:"s",lx:14,ly:-6,bd:[["AREX","A11"]]},
+ incheon:{x:69,y:1540,hg:"인천공항1터미널",kk:"インチョンゴンハン",lvl:1,ax:"s",lx:14,ly:-6,bd:[["AREX","A10"]]},
+ cargo:{x:74,y:1443,hg:"공항화물청사",kk:"コンハン|ファムルチョンサ",lvl:3,ax:"s",lx:14,ly:0,bd:[["AREX","A09"]]},
+ unseo:{x:79,y:1347,hg:"운서",kk:"ウンソ",lvl:3,ax:"s",lx:14,ly:0,bd:[["AREX","A08"]]},
+ yeongjong:{x:84,y:1247,hg:"영종",kk:"ヨンジョン",lvl:3,ax:"s",lx:14,ly:0,bd:[["AREX","A072"]]},
+ cheongna:{x:88,y:1144,hg:"청라국제도시",kk:"チョンナ|グクチェドシ",lvl:3,ax:"s",lx:14,ly:0,bd:[["AREX","A071"]]},
+ geomam:{x:96,y:1034,hg:"검암",kk:"コマム",lvl:3,ax:"s",lx:14,ly:0,bd:[["AREX","A07"]]},
+ gyeyang:{x:105,y:919,hg:"계양",kk:"ケヤン",lvl:3,ax:"s",lx:14,ly:0,bd:[["AREX","A06"]]},
+ gimpo:{x:148,y:704,hg:"김포공항",kk:"キンポゴンハン",lvl:1,tr:1,ax:"s",lx:-2,ly:-26,bd:[["AREX","A05"],["L5","512"],["L9","902"]]},
+ magoknaru:{x:252,y:565,hg:"마곡나루",kk:"マゴンナル",lvl:2,tr:1,ax:"s",lx:10,ly:-14,bd:[["AREX","A042"],["L9","905"]]},
+ dmc:{x:364,y:440,hg:"디지털미디어시티",kk:"ディジタル|メディアシティ",lvl:2,tr:1,ax:"s",lx:-2,ly:-18,bd:[["AREX","A04"],["L6","618"]]},
+/* 1号線 */
+ cheongnyangni:{x:2045,y:223,hg:"청량리",kk:"チョンニャンニ",lvl:1,ax:"s",lx:-4,ly:-18,bd:[["L1","124"]]},
+ jegidong:{x:1978,y:284,hg:"제기동",kk:"チェギドン",lvl:3,ax:"s",lx:12,ly:-6,bd:[["L1","125"]]},
+ sinseoldong:{x:1887,y:359,hg:"신설동",kk:"シンソルトン",lvl:2,tr:1,ax:"s",lx:12,ly:-8,bd:[["L1","126"],["L2B","211-4"]]},
+ dongmyo:{x:1788,y:370,hg:"동묘앞",kk:"トンミョアプ",lvl:2,tr:1,ax:"s",lx:14,ly:-8,bd:[["L1","127"],["L6","636"]]},
+ dongdaemun:{x:1666,y:378,hg:"동대문",kk:"トンデムン",lvl:1,tr:1,ax:"s",lx:8,ly:-10,bd:[["L1","128"],["L4","421"]]},
+ jongno5:{x:1533,y:392,hg:"종로5가",kk:"チョンノオガ",lvl:3,ax:"s",lx:8,ly:-14,bd:[["L1","129"]]},
+ jongno3:{x:1189,y:407,hg:"종로3가",kk:"チョンノ|サムガ",lvl:1,tr:1,ax:"s",lx:18,ly:-30,bd:[["L1","130"],["L3","329"],["L5","534"]]},
+ jonggak:{x:1109,y:455,hg:"종각",kk:"チョンガク",lvl:3,ax:"e",lx:-14,ly:28,bd:[["L1","131"]]},
+ sicheong:{x:988,y:518,hg:"시청",kk:"シチョン",lvl:1,tr:1,ax:"s",lx:30,ly:30,bd:[["L1","132"],["L2","201"]]},
+ seoul:{x:936,y:612,hg:"서울역",kk:"ソウルヨク",lvl:1,tr:1,ax:"s",lx:-6,ly:46,bd:[["L1","133"],["L4","426"],["AREX","A01"]]},
+ namnyeong:{x:866,y:675,hg:"남영",kk:"ナミョン",lvl:3,ax:"e",lx:-14,ly:16,bd:[["L1","134"]]},
+ yongsan:{x:792,y:746,hg:"용산",kk:"ヨンサン",lvl:2,ax:"s",lx:14,ly:-20,bd:[["L1","135"]]},
+ noryangjin:{x:684,y:803,hg:"노량진",kk:"ノリャンジン",lvl:2,tr:1,ax:"s",lx:0,ly:-16,bd:[["L1","136"],["L9","917"]]},
+ daebang:{x:606,y:837,hg:"대방",kk:"テバン",lvl:3,ax:"s",lx:6,ly:-40,bd:[["L1","137"]]},
+ singil:{x:510,y:813,hg:"신길",kk:"シンギル",lvl:3,tr:1,ax:"s",lx:2,ly:28,bd:[["L1","138"],["L5","525"]]},
+ yeongdeungpo:{x:413,y:915,hg:"영등포",kk:"ヨンドゥンポ",lvl:2,ax:"e",lx:-14,ly:36,bd:[["L1","139"]]},
+ sindorim:{x:381,y:912,hg:"신도림",kk:"シンドリム",lvl:2,tr:1,ax:"s",lx:16,ly:36,bd:[["L1","140"],["L2","234"]]},
+ guro:{x:307,y:1006,hg:"구로",kk:"クロ",lvl:2,tr:1,ax:"e",lx:-14,ly:16,bd:[["L1","141"]]},
+ gasan:{x:385,y:1098,hg:"가산디지털단지",kk:"カサン|ディジタルダンジ",lvl:2,tr:1,ax:"s",lx:16,ly:-100,bd:[["L1","P142"],["L7","746"]]},
+ doksan:{x:425,y:1178,hg:"독산",kk:"トクサン",lvl:3,ax:"s",lx:14,ly:0,bd:[["L1","P143"]]},
+ geumcheongu:{x:462,y:1262,hg:"금천구청",kk:"クムチョン|グチョン",lvl:2,ax:"s",lx:14,ly:0,bd:[["L1","P144"]]},
+ gwangmyeong:{x:331,y:1335,hg:"광명",kk:"クァンミョン",lvl:2,ax:"e",lx:-14,ly:40,bd:[["L1B","P144-1"]]},
+ seoksu:{x:511,y:1347,hg:"석수",kk:"ソクス",lvl:3,ax:"s",lx:14,ly:0,bd:[["L1","P145"]]},
+ gwanak:{x:572,y:1416,hg:"관악",kk:"クァナク",lvl:3,ax:"s",lx:14,ly:0,bd:[["L1","P146"]]},
+ anyang:{x:657,y:1477,hg:"안양",kk:"アニャン",lvl:2,ax:"s",lx:10,ly:-14,bd:[["L1","P147"]]},
+ myeonghak:{x:807,y:1513,hg:"명학",kk:"ミョンハク",lvl:3,ax:"s",lx:6,ly:-16,bd:[["L1","P148"]]},
+ geumjeong:{x:950,y:1538,hg:"금정",kk:"クムジョン",lvl:1,tr:1,ax:"s",lx:8,ly:30,bd:[["L1","P149"],["L4","443"]]},
+/* 2号線 */
+ euljiro:{x:1115,y:500,hg:"을지로입구",kk:"ウルチロイック",lvl:2,ax:"e",lx:-70,ly:118,bd:[["L2","202"]]},
+ euljiro3:{x:1206,y:490,hg:"을지로3가",kk:"ウルチロ|サムガ",lvl:2,tr:1,ax:"e",lx:-20,ly:40,bd:[["L2","203"],["L3","330"]]},
+ euljiro4:{x:1278,y:485,hg:"을지로4가",kk:"ウルチロ|サガ",lvl:3,tr:1,ax:"e",lx:-14,ly:44,bd:[["L2","204"],["L5","535"]]},
+ ddp:{x:1339,y:495,hg:"동대문역사문화공원",kk:"トンデムン|ヨクサムナゴンウォン",lvl:1,tr:1,ax:"m",lx:40,ly:-129,bd:[["L2","205"],["L4","422"],["L5","536"]]},
+ sindang:{x:1401,y:501,hg:"신당",kk:"シンダン",lvl:2,tr:1,ax:"s",lx:16,ly:30,bd:[["L2","206"],["L6","635"]]},
+ sangwangsimni:{x:1471,y:514,hg:"상왕십리",kk:"サンワンシムニ",lvl:3,ax:"s",lx:10,ly:36,bd:[["L2","207"]]},
+ wangsimni:{x:1547,y:524,hg:"왕십리",kk:"ワンシムニ",lvl:1,tr:1,ax:"s",lx:-2,ly:-34,bd:[["L2","208"],["L5","540"]]},
+ hanyangdae:{x:1640,y:550,hg:"한양대",kk:"ハニャンデ",lvl:3,ax:"s",lx:10,ly:-10,bd:[["L2","209"]]},
+ ttukseom:{x:1721,y:581,hg:"뚝섬",kk:"トゥクソム",lvl:3,ax:"s",lx:10,ly:-8,bd:[["L2","210"]]},
+ seongsu:{x:1789,y:607,hg:"성수",kk:"ソンス",lvl:2,tr:1,ax:"s",lx:16,ly:48,bd:[["L2","211"]]},
+ geondae:{x:1855,y:652,hg:"건대입구",kk:"コンデイック",lvl:1,tr:1,ax:"s",lx:16,ly:2,bd:[["L2","212"],["L7","727"]]},
+ guui:{x:1901,y:725,hg:"구의",kk:"クイ",lvl:3,ax:"s",lx:14,ly:0,bd:[["L2","213"]]},
+ gangbyeon:{x:1938,y:798,hg:"강변",kk:"カンビョン",lvl:3,ax:"e",lx:-14,ly:16,bd:[["L2","214"]]},
+ jamsilnaru:{x:1978,y:790,hg:"잠실나루",kk:"チャムシルナル",lvl:3,ax:"s",lx:12,ly:0,bd:[["L2","215"]]},
+ jamsil:{x:1990,y:875,hg:"잠실",kk:"チャムシル",lvl:1,ax:"s",lx:12,ly:0,bd:[["L2","216"]]},
+ jamsilsaenae:{x:2012,y:975,hg:"잠실새내",kk:"チャムシルセネ",lvl:3,ax:"s",lx:12,ly:-4,bd:[["L2","217"]]},
+ jonghap:{x:2024,y:1016,hg:"종합운동장",kk:"チョンハプン|ドンジャン",lvl:2,tr:1,ax:"m",lx:10,ly:38,bd:[["L2","218"],["L9","930"]]},
+ samseong:{x:1740,y:1210,hg:"삼성",kk:"サムソン",lvl:2,ax:"s",lx:-6,ly:30,bd:[["L2","219"]]},
+ seolleung:{x:1643,y:1212,hg:"선릉",kk:"ソンヌン",lvl:3,ax:"s",lx:4,ly:28,bd:[["L2","220"]]},
+ yeoksam:{x:1545,y:1206,hg:"역삼",kk:"ヨクサム",lvl:3,ax:"s",lx:4,ly:28,bd:[["L2","221"]]},
+ gangnam:{x:1447,y:1188,hg:"강남",kk:"カンナム",lvl:1,tr:1,ax:"s",lx:-8,ly:32,bd:[["L2","222"]]},
+ gyodae:{x:1338,y:1200,hg:"교대",kk:"キョデ",lvl:2,tr:1,ax:"s",lx:-10,ly:30,bd:[["L2","223"],["L3","340"]]},
+ seocho:{x:1228,y:1180,hg:"서초",kk:"ソチョ",lvl:3,ax:"s",lx:2,ly:20,bd:[["L2","224"]]},
+ bangbae:{x:1133,y:1165,hg:"방배",kk:"パンベ",lvl:3,ax:"e",lx:-12,ly:26,bd:[["L2","225"]]},
+ sadang:{x:1033,y:1150,hg:"사당",kk:"サダン",lvl:2,tr:1,ax:"s",lx:-6,ly:32,bd:[["L2","226"],["L4","433"]]},
+ nakseongdae:{x:945,y:1155,hg:"낙성대",kk:"ナクソンデ",lvl:3,ax:"s",lx:12,ly:-52,bd:[["L2","227"]]},
+ seouldae:{x:859,y:1142,hg:"서울대입구",kk:"ソウルデイック",lvl:2,ax:"s",lx:14,ly:60,bd:[["L2","228"]]},
+ bongcheon:{x:779,y:1125,hg:"봉천",kk:"ポンチョン",lvl:3,ax:"s",lx:0,ly:28,bd:[["L2","229"]]},
+ sillim:{x:706,y:1103,hg:"신림",kk:"シンリム",lvl:2,ax:"s",lx:-2,ly:-30,bd:[["L2","230"]]},
+ sindaebang:{x:654,y:1138,hg:"신대방",kk:"シンデバン",lvl:3,ax:"e",lx:-12,ly:48,bd:[["L2","231"]]},
+ gurodigital:{x:587,y:1088,hg:"구로디지털단지",kk:"クロ|ディジタルダンジ",lvl:2,ax:"e",lx:-14,ly:14,bd:[["L2","232"]]},
+ daerim:{x:521,y:1041,hg:"대림",kk:"テリム",lvl:2,tr:1,ax:"s",lx:24,ly:96,bd:[["L2","233"],["L7","744"]]},
+ munrae:{x:358,y:830,hg:"문래",kk:"ムンレ",lvl:3,ax:"e",lx:-14,ly:0,bd:[["L2","235"]]},
+ yeongdeungpogu:{x:363,y:752,hg:"영등포구청",kk:"ヨンドゥンポ|グチョン",lvl:3,tr:1,ax:"e",lx:-14,ly:0,bd:[["L2","236"],["L5","523"]]},
+ dangsan:{x:392,y:675,hg:"당산",kk:"タンサン",lvl:3,tr:1,ax:"s",lx:16,ly:26,bd:[["L2","237"],["L9","913"]]},
+ hapjeong:{x:451,y:604,hg:"합정",kk:"ハプチョン",lvl:2,tr:1,ax:"e",lx:-6,ly:-92,bd:[["L2","238"],["L6","622"]]},
+ hongdae:{x:550,y:559,hg:"홍대입구",kk:"ホンデイック",lvl:1,tr:1,ax:"s",lx:8,ly:-76,bd:[["L2","239"],["AREX","A03"]]},
+ sinchon:{x:658,y:535,hg:"신촌",kk:"シンチョン",lvl:2,ax:"s",lx:10,ly:-16,bd:[["L2","240"]]},
+ idae:{x:740,y:521,hg:"이대",kk:"イデ",lvl:3,ax:"s",lx:8,ly:-14,bd:[["L2","241"]]},
+ ahyeon:{x:825,y:514,hg:"아현",kk:"アヒョン",lvl:3,ax:"s",lx:8,ly:44,bd:[["L2","242"]]},
+ chungjeongno:{x:901,y:513,hg:"충정로",kk:"チュンジョンノ",lvl:3,tr:1,ax:"e",lx:-14,ly:-24,bd:[["L2","243"],["L5","531"]]},
+ yongdap:{x:1824,y:533,hg:"용답",kk:"ヨンダプ",lvl:3,ax:"s",lx:14,ly:0,bd:[["L2B","211-1"]]},
+ sindap:{x:1850,y:471,hg:"신답",kk:"シンダプ",lvl:3,ax:"s",lx:14,ly:0,bd:[["L2B","211-2"]]},
+ yongdu:{x:1871,y:417,hg:"용두",kk:"ヨンドゥ",lvl:3,ax:"s",lx:14,ly:0,bd:[["L2B","211-3"]]},
+/* 3号線 */
+ yeonsinnae:{x:691,y:174,hg:"연신내",kk:"ヨンシンネ",lvl:2,tr:1,ax:"s",lx:14,ly:-30,bd:[["L3","321"],["L6","614"]]},
+ bulgwang:{x:533,y:197,hg:"불광",kk:"プルグァン",lvl:2,tr:1,ax:"s",lx:16,ly:10,bd:[["L3","322"],["L6","612"]]},
+ nokbeon:{x:508,y:266,hg:"녹번",kk:"ノクボン",lvl:3,ax:"e",lx:-14,ly:28,bd:[["L3","323"]]},
+ hongje:{x:498,y:333,hg:"홍제",kk:"ホンジェ",lvl:3,ax:"e",lx:-14,ly:0,bd:[["L3","324"]]},
+ muakjae:{x:506,y:399,hg:"무악재",kk:"ムアクチェ",lvl:3,ax:"e",lx:-14,ly:0,bd:[["L3","325"]]},
+ dongnimmun:{x:532,y:471,hg:"독립문",kk:"トンニンムン",lvl:3,ax:"e",lx:-14,ly:0,bd:[["L3","326"]]},
+ gyeongbok:{x:734,y:439,hg:"경복궁",kk:"キョンボックン",lvl:1,ax:"s",lx:12,ly:-14,bd:[["L3","327"]]},
+ anguk:{x:921,y:393,hg:"안국",kk:"アングク",lvl:2,ax:"s",lx:10,ly:-16,bd:[["L3","328"]]},
+ chungmuro:{x:1243,y:590,hg:"충무로",kk:"チュンムロ",lvl:2,tr:1,ax:"s",lx:16,ly:-16,bd:[["L3","331"],["L4","423"]]},
+ dongdaeip:{x:1266,y:679,hg:"동대입구",kk:"トンデイック",lvl:3,ax:"s",lx:16,ly:0,bd:[["L3","332"]]},
+ yaksu:{x:1317,y:749,hg:"약수",kk:"ヤクス",lvl:3,tr:1,ax:"s",lx:14,ly:16,bd:[["L3","333"],["L6","633"]]},
+ geumho:{x:1401,y:806,hg:"금호",kk:"クモ",lvl:3,ax:"s",lx:12,ly:10,bd:[["L3","334"]]},
+ oksu:{x:1499,y:855,hg:"옥수",kk:"オクス",lvl:3,ax:"s",lx:10,ly:-18,bd:[["L3","335"]]},
+ apgujeong:{x:1582,y:958,hg:"압구정",kk:"アプクジョン",lvl:3,ax:"e",lx:-16,ly:10,bd:[["L3","336"]]},
+ sinsa:{x:1628,y:989,hg:"신사",kk:"シンサ",lvl:2,ax:"e",lx:-70,ly:64,bd:[["L3","337"]]},
+ jamwon:{x:1652,y:1075,hg:"잠원",kk:"チャムウォン",lvl:3,ax:"m",lx:-30,ly:32,bd:[["L3","338"]]},
+ gosok:{x:1606,y:1085,hg:"고속터미널",kk:"コソクターミナル",lvl:1,tr:1,ax:"e",lx:-30,ly:48,bd:[["L3","339"],["L7","734"],["L9","923"]]},
+ nambuterminal:{x:1238,y:1268,hg:"남부터미널",kk:"ナンブターミナル",lvl:3,ax:"s",lx:8,ly:24,bd:[["L3","341"]]},
+ yangjae:{x:1220,y:1332,hg:"양재",kk:"ヤンジェ",lvl:2,ax:"e",lx:-14,ly:20,bd:[["L3","342"]]},
+/* 4号線 */
+ seongsin:{x:1307,y:184,hg:"성신여대입구",kk:"ソンシン|ヨデイック",lvl:2,ax:"s",lx:14,ly:-24,bd:[["L4","418"]]},
+ hanseongdae:{x:1340,y:237,hg:"한성대입구",kk:"ハンソンデイック",lvl:3,ax:"s",lx:14,ly:0,bd:[["L4","419"]]},
+ hyehwa:{x:1374,y:293,hg:"혜화",kk:"ヘファ",lvl:2,ax:"s",lx:14,ly:0,bd:[["L4","420"]]},
+ myeongdong:{x:1159,y:649,hg:"명동",kk:"ミョンドン",lvl:1,ax:"s",lx:20,ly:-52,bd:[["L4","424"]]},
+ hoehyeon:{x:1068,y:672,hg:"회현",kk:"フェヒョン",lvl:2,ax:"e",lx:-70,ly:-108,bd:[["L4","425"]]},
+ sukdae:{x:891,y:698,hg:"숙대입구",kk:"スクテイック",lvl:3,ax:"e",lx:-14,ly:10,bd:[["L4","427"]]},
+ samgakji:{x:859,y:781,hg:"삼각지",kk:"サムガクチ",lvl:3,tr:1,ax:"s",lx:14,ly:16,bd:[["L4","428"],["L6","628"]]},
+ sinyongsan:{x:828,y:846,hg:"신용산",kk:"シニョンサン",lvl:3,ax:"e",lx:-14,ly:0,bd:[["L4","429"]]},
+ ichon:{x:809,y:925,hg:"이촌",kk:"イチョン",lvl:3,ax:"e",lx:-14,ly:6,bd:[["L4","430"]]},
+ dongjak:{x:878,y:982,hg:"동작",kk:"トンジャク",lvl:3,tr:1,ax:"s",lx:-10,ly:30,bd:[["L4","431"],["L9","920"]]},
+ chongsin:{x:1118,y:1113,hg:"총신대입구",kk:"チョンシン|デイック",lvl:2,tr:1,ax:"s",lx:6,ly:-18,bd:[["L4","432"],["L7","736"]]},
+ namtaeryeong:{x:1150,y:1195,hg:"남태령",kk:"ナムテリョン",lvl:3,ax:"s",lx:8,ly:26,bd:[["L4","434"]]},
+ seonbawi:{x:1205,y:1255,hg:"선바위",kk:"ソンバウイ",lvl:3,ax:"s",lx:12,ly:20,bd:[["L4","435"]]},
+ gyeongma:{x:1245,y:1310,hg:"경마공원",kk:"キョンマゴンウォン",lvl:3,ax:"s",lx:14,ly:8,bd:[["L4","436"]]},
+ daegongwon:{x:1270,y:1370,hg:"대공원",kk:"テゴンウォン",lvl:3,ax:"s",lx:14,ly:0,bd:[["L4","437"]]},
+ gwacheon:{x:1290,y:1430,hg:"과천",kk:"クァチョン",lvl:3,ax:"s",lx:14,ly:0,bd:[["L4","438"]]},
+ jeongbu:{x:1305,y:1462,hg:"정부과천청사",kk:"チョンブ|クァチョンジョンサ",lvl:3,ax:"s",lx:14,ly:0,bd:[["L4","439"]]},
+ indeokwon:{x:1277,y:1473,hg:"인덕원",kk:"インドグォン",lvl:2,ax:"e",lx:-14,ly:36,bd:[["L4","440"]]},
+ pyeongchon:{x:1191,y:1501,hg:"평촌",kk:"ピョンチョン",lvl:3,ax:"s",lx:70,ly:10,bd:[["L4","441"]]},
+ beomgye:{x:1088,y:1518,hg:"범계",kk:"ポムゲ",lvl:2,ax:"s",lx:2,ly:-16,bd:[["L4","442"]]},
+/* 5号線 */
+ yeouido:{x:512,y:761,hg:"여의도",kk:"ヨイド",lvl:2,tr:1,ax:"s",lx:2,ly:-56,bd:[["L5","526"],["L9","915"]]},
+ yeoinaru:{x:600,y:728,hg:"여의나루",kk:"ヨイナル",lvl:3,ax:"s",lx:6,ly:-16,bd:[["L5","527"]]},
+ mapo:{x:674,y:678,hg:"마포",kk:"マポ",lvl:3,ax:"e",lx:-12,ly:-14,bd:[["L5","528"]]},
+ gongdeok:{x:765,y:609,hg:"공덕",kk:"コンドク",lvl:2,tr:1,ax:"e",lx:-14,ly:40,bd:[["L5","529"],["L6","626"],["AREX","A02"]]},
+ aeogae:{x:842,y:561,hg:"애오개",kk:"エオゲ",lvl:3,ax:"s",lx:6,ly:-16,bd:[["L5","530"]]},
+ seodaemun:{x:979,y:454,hg:"서대문",kk:"ソデムン",lvl:3,ax:"s",lx:8,ly:-14,bd:[["L5","532"]]},
+ gwanghwamun:{x:1032,y:389,hg:"광화문",kk:"クァンファムン",lvl:2,ax:"s",lx:20,ly:-64,bd:[["L5","533"]]},
+ cheonggu:{x:1400,y:565,hg:"청구",kk:"チョング",lvl:3,tr:1,ax:"s",lx:12,ly:30,bd:[["L5","537"],["L6","634"]]},
+ singeumho:{x:1460,y:609,hg:"신금호",kk:"シングモ",lvl:3,ax:"s",lx:10,ly:12,bd:[["L5","538"]]},
+ haengdang:{x:1525,y:639,hg:"행당",kk:"ヘンダン",lvl:3,ax:"s",lx:12,ly:8,bd:[["L5","539"]]},
+ majang:{x:1653,y:491,hg:"마장",kk:"マジャン",lvl:3,ax:"s",lx:8,ly:-14,bd:[["L5","541"]]},
+ dapsimni:{x:1744,y:474,hg:"답십리",kk:"タプシムニ",lvl:3,ax:"s",lx:8,ly:-14,bd:[["L5","542"]]},
+ janghanpyeong:{x:1820,y:461,hg:"장한평",kk:"チャンハンピョン",lvl:3,ax:"s",lx:6,ly:-16,bd:[["L5","543"]]},
+ gunja:{x:1824,y:508,hg:"군자",kk:"クンジャ",lvl:2,tr:1,ax:"e",lx:-14,ly:40,bd:[["L5","544"],["L7","725"]]},
+ achasan:{x:1881,y:525,hg:"아차산",kk:"アチャサン",lvl:3,ax:"s",lx:14,ly:-6,bd:[["L5","545"]]},
+ gwangnaru:{x:1938,y:591,hg:"광나루",kk:"クァンナル",lvl:3,ax:"s",lx:14,ly:0,bd:[["L5","546"]]},
+ cheonho:{x:1999,y:664,hg:"천호",kk:"チョノ",lvl:2,ax:"s",lx:14,ly:0,bd:[["L5","547"]]},
+/* 6号線 */
+ gusan:{x:755,y:220,hg:"구산",kk:"クサン",lvl:3,ax:"s",lx:12,ly:-8,bd:[["L6","615"]]},
+ dokbawi:{x:608,y:169,hg:"독바위",kk:"トクパウィ",lvl:3,ax:"s",lx:8,ly:-14,bd:[["L6","613"]]},
+ yeokchon:{x:450,y:209,hg:"역촌",kk:"ヨクチョン",lvl:3,ax:"e",lx:-14,ly:-4,bd:[["L6","611"]]},
+ eungam:{x:385,y:254,hg:"응암",kk:"ウンアム",lvl:2,ax:"e",lx:-14,ly:18,bd:[["L6","610"]]},
+ saejeol:{x:347,y:322,hg:"새절",kk:"セジョル",lvl:3,ax:"e",lx:-14,ly:0,bd:[["L6","616"]]},
+ jeungsan:{x:324,y:394,hg:"증산",kk:"チュンサン",lvl:3,ax:"e",lx:-14,ly:0,bd:[["L6","617"]]},
+ worldcup:{x:372,y:518,hg:"월드컵경기장",kk:"ワールドカップ|キョンギジャン",lvl:3,ax:"e",lx:-14,ly:0,bd:[["L6","619"]]},
+ mapogu:{x:392,y:567,hg:"마포구청",kk:"マポグチョン",lvl:3,ax:"e",lx:-14,ly:6,bd:[["L6","620"]]},
+ mangwon:{x:420,y:589,hg:"망원",kk:"マンウォン",lvl:3,ax:"s",lx:16,ly:36,bd:[["L6","621"]]},
+ sangsu:{x:566,y:600,hg:"상수",kk:"サンス",lvl:3,ax:"s",lx:6,ly:24,bd:[["L6","623"]]},
+ gwangheungchang:{x:657,y:606,hg:"광흥창",kk:"クァンフンチャン",lvl:3,ax:"s",lx:4,ly:40,bd:[["L6","624"]]},
+ daeheung:{x:717,y:607,hg:"대흥",kk:"テフン",lvl:3,ax:"e",lx:-14,ly:-30,bd:[["L6","625"]]},
+ hyochang:{x:819,y:686,hg:"효창공원앞",kk:"ヒョチャン|ゴンウォンアプ",lvl:3,ax:"s",lx:12,ly:8,bd:[["L6","627"]]},
+ noksapyeong:{x:928,y:838,hg:"녹사평",kk:"ノクサピョン",lvl:3,ax:"s",lx:12,ly:16,bd:[["L6","629"]]},
+ itaewon:{x:1005,y:848,hg:"이태원",kk:"イテウォン",lvl:2,ax:"s",lx:14,ly:-64,bd:[["L6","630"]]},
+ hangangjin:{x:1088,y:850,hg:"한강진",kk:"ハンガンジン",lvl:3,ax:"s",lx:10,ly:-64,bd:[["L6","631"]]},
+ beotigogae:{x:1172,y:853,hg:"버티고개",kk:"ポティゴゲ",lvl:3,ax:"s",lx:8,ly:-16,bd:[["L6","632"]]},
+/* 7号線 */
+ jangam:{x:1352,y:74,hg:"장암",kk:"チャンアム",lvl:3,ax:"s",lx:12,ly:-6,bd:[["L7","709"]]},
+ dobongsan:{x:1413,y:69,hg:"도봉산",kk:"トボンサン",lvl:3,ax:"s",lx:10,ly:-8,bd:[["L7","710"]]},
+ suraksan:{x:1474,y:64,hg:"수락산",kk:"スラクサン",lvl:3,ax:"s",lx:10,ly:-8,bd:[["L7","711"]]},
+ madeul:{x:1535,y:66,hg:"마들",kk:"マドゥル",lvl:3,ax:"s",lx:10,ly:-8,bd:[["L7","712"]]},
+ nowon:{x:1588,y:74,hg:"노원",kk:"ノウォン",lvl:2,ax:"s",lx:10,ly:36,bd:[["L7","713"]]},
+ junggye:{x:1637,y:88,hg:"중계",kk:"チュンゲ",lvl:3,ax:"s",lx:10,ly:30,bd:[["L7","714"]]},
+ hagye:{x:1682,y:110,hg:"하계",kk:"ハゲ",lvl:3,ax:"s",lx:12,ly:-4,bd:[["L7","715"]]},
+ gongneung:{x:1718,y:137,hg:"공릉",kk:"コンヌン",lvl:3,ax:"s",lx:14,ly:0,bd:[["L7","716"]]},
+ taereung:{x:1743,y:171,hg:"태릉입구",kk:"テルンイック",lvl:3,ax:"s",lx:14,ly:0,bd:[["L7","717"]]},
+ meokgol:{x:1755,y:210,hg:"먹골",kk:"モッコル",lvl:3,ax:"s",lx:14,ly:0,bd:[["L7","718"]]},
+ junghwa:{x:1762,y:249,hg:"중화",kk:"チュンファ",lvl:3,ax:"s",lx:14,ly:0,bd:[["L7","719"]]},
+ sangbong:{x:1768,y:288,hg:"상봉",kk:"サンボン",lvl:2,ax:"s",lx:14,ly:0,bd:[["L7","720"]]},
+ myeonmok:{x:1777,y:329,hg:"면목",kk:"ミョンモク",lvl:3,ax:"s",lx:14,ly:0,bd:[["L7","721"]]},
+ sagajeong:{x:1787,y:367,hg:"사가정",kk:"サガジョン",lvl:3,ax:"s",lx:14,ly:0,bd:[["L7","722"]]},
+ yongmasan:{x:1796,y:407,hg:"용마산",kk:"ヨンマサン",lvl:3,ax:"s",lx:14,ly:0,bd:[["L7","723"]]},
+ jungok:{x:1810,y:448,hg:"중곡",kk:"チュンゴク",lvl:3,ax:"s",lx:14,ly:0,bd:[["L7","724"]]},
+ eorini:{x:1844,y:580,hg:"어린이대공원",kk:"オリニ|デゴンウォン",lvl:3,ax:"s",lx:14,ly:0,bd:[["L7","726"]]},
+ ttukseomresort:{x:1878,y:714,hg:"뚝섬유원지",kk:"トゥクソム|ユウォンジ",lvl:3,ax:"e",lx:-14,ly:-10,bd:[["L7","728"]]},
+ cheongdam:{x:1853,y:781,hg:"청담",kk:"チョンダム",lvl:3,ax:"e",lx:-14,ly:18,bd:[["L7","729"]]},
+ gangnamgu:{x:1816,y:842,hg:"강남구청",kk:"カンナムグチョン",lvl:3,ax:"e",lx:-14,ly:20,bd:[["L7","730"]]},
+ hakdong:{x:1779,y:965,hg:"학동",kk:"ハクトン",lvl:3,ax:"s",lx:14,ly:6,bd:[["L7","731"]]},
+ nonhyeon:{x:1738,y:957,hg:"논현",kk:"ノンヒョン",lvl:2,ax:"e",lx:-44,ly:-60,bd:[["L7","732"]]},
+ banpo:{x:1650,y:1028,hg:"반포",kk:"パンポ",lvl:3,ax:"s",lx:30,ly:36,bd:[["L7","733"]]},
+ naebang:{x:1368,y:1140,hg:"내방",kk:"ネバン",lvl:3,ax:"s",lx:14,ly:-10,bd:[["L7","735"]]},
+ namseong:{x:1060,y:1160,hg:"남성",kk:"ナムソン",lvl:3,ax:"s",lx:14,ly:-30,bd:[["L7","737"]]},
+ sungsildae:{x:1011,y:1201,hg:"숭실대입구",kk:"スンシルデイック",lvl:3,ax:"e",lx:-14,ly:-70,bd:[["L7","738"]]},
+ sangdo:{x:969,y:1245,hg:"상도",kk:"サンド",lvl:3,ax:"e",lx:-14,ly:0,bd:[["L7","739"]]},
+ jangseungbaegi:{x:933,y:1286,hg:"장승배기",kk:"チャンスンベギ",lvl:3,ax:"e",lx:-14,ly:0,bd:[["L7","740"]]},
+ sindaebangsam:{x:896,y:1328,hg:"신대방삼거리",kk:"シンデバン|サムゴリ",lvl:3,ax:"e",lx:-14,ly:0,bd:[["L7","741"]]},
+ boramae:{x:856,y:1369,hg:"보라매",kk:"ポラメ",lvl:3,ax:"e",lx:-14,ly:0,bd:[["L7","742"]]},
+ sinpung:{x:811,y:1408,hg:"신풍",kk:"シンプン",lvl:3,ax:"e",lx:-14,ly:0,bd:[["L7","743"]]},
+ namguro:{x:452,y:1072,hg:"남구로",kk:"ナムグロ",lvl:3,ax:"e",lx:-14,ly:10,bd:[["L7","745"]]},
+ cheolsan:{x:352,y:1178,hg:"철산",kk:"チョルサン",lvl:3,ax:"e",lx:-14,ly:0,bd:[["L7","747"]]},
+ gwangmyeongsageori:{x:320,y:1262,hg:"광명사거리",kk:"クァンミョン|サゴリ",lvl:3,ax:"e",lx:-14,ly:0,bd:[["L7","748"]]},
+ cheonwang:{x:291,y:1347,hg:"천왕",kk:"チョヌァン",lvl:3,ax:"e",lx:-14,ly:-24,bd:[["L7","749"]]},
+ onsu:{x:262,y:1433,hg:"온수",kk:"オンス",lvl:2,ax:"e",lx:-14,ly:18,bd:[["L7","750"]]},
+/* 9号線 */
+ gukhoe:{x:442,y:741,hg:"국회의사당",kk:"クケイサダン",lvl:3,ax:"e",lx:-14,ly:16,bd:[["L9","914"]]},
+ saetgang:{x:589,y:795,hg:"샛강",kk:"セッカン",lvl:3,ax:"s",lx:4,ly:26,bd:[["L9","916"]]},
+ nodeul:{x:759,y:925,hg:"노들",kk:"ノドゥル",lvl:3,ax:"e",lx:-14,ly:34,bd:[["L9","918"]]},
+ heukseok:{x:825,y:929,hg:"흑석",kk:"フクソク",lvl:3,ax:"m",lx:0,ly:30,bd:[["L9","919"]]},
+ gubanpo:{x:1128,y:1002,hg:"구반포",kk:"クバンポ",lvl:3,ax:"e",lx:-14,ly:30,bd:[["L9","921"]]},
+ sinbanpo:{x:1262,y:1015,hg:"신반포",kk:"シンバンポ",lvl:3,ax:"e",lx:-14,ly:-48,bd:[["L9","922"]]},
+ sapyeong:{x:1660,y:1070,hg:"사평",kk:"サピョン",lvl:3,ax:"s",lx:2,ly:44,bd:[["L9","924"]]},
+ sinnonhyeon:{x:1718,y:1058,hg:"신논현",kk:"シンノンヒョン",lvl:2,ax:"m",lx:30,ly:-70,bd:[["L9","925"]]},
+ eonju:{x:1778,y:1048,hg:"언주",kk:"オンジュ",lvl:3,ax:"e",lx:-14,ly:20,bd:[["L9","926"]]},
+ seonjeongneung:{x:1836,y:1040,hg:"선정릉",kk:"ソンジョンヌン",lvl:3,ax:"m",lx:-2,ly:48,bd:[["L9","927"]]},
+ samseongjungang:{x:1892,y:1032,hg:"삼성중앙",kk:"サムソン|ジュンアン",lvl:3,ax:"m",lx:-30,ly:-66,bd:[["L9","928"]]},
+ bongeunsa:{x:1960,y:1024,hg:"봉은사",kk:"ポンウンサ",lvl:3,ax:"e",lx:-12,ly:40,bd:[["L9","929"]]}
+};
+const NAME = {
+ incheon2:"仁川空港2ターミナル",incheon:"仁川空港1ターミナル",cargo:"空港貨物庁舎",unseo:"雲西",yeongjong:"永宗",cheongna:"青羅国際都市",geomam:"黔岩",gyeyang:"桂陽",gimpo:"金浦空港",magoknaru:"麻谷ナル",dmc:"デジタルメディアシティ",
+ cheongnyangni:"清涼里",jegidong:"祭基洞",sinseoldong:"新設洞",dongmyo:"東廟前",dongdaemun:"東大門",jongno5:"鐘路5街",jongno3:"鐘路3街",jonggak:"鐘閣",sicheong:"市庁",seoul:"ソウル駅",namnyeong:"南営",yongsan:"龍山",noryangjin:"鷺梁津",daebang:"大方",singil:"新吉",yeongdeungpo:"永登浦",sindorim:"新道林",guro:"九老",gasan:"加山デジタル団地",doksan:"禿山",geumcheongu:"衿川区庁",gwangmyeong:"光明",seoksu:"石水",gwanak:"冠岳",anyang:"安養",myeonghak:"鳴鶴",geumjeong:"衿井",
+ euljiro:"乙支路入口",euljiro3:"乙支路3街",euljiro4:"乙支路4街",ddp:"東大門歴史文化公園",sindang:"新堂",sangwangsimni:"上往十里",wangsimni:"往十里",hanyangdae:"漢陽大",ttukseom:"トゥクソム",seongsu:"聖水",geondae:"建大入口",guui:"九宜",gangbyeon:"江辺",jamsilnaru:"蚕室ナル",jamsil:"蚕室",jamsilsaenae:"蚕室セネ",jonghap:"総合運動場",samseong:"三星",seolleung:"宣陵",yeoksam:"駅三",gangnam:"江南",gyodae:"教大",seocho:"瑞草",bangbae:"方背",sadang:"舎堂",nakseongdae:"落星大",seouldae:"ソウル大入口",bongcheon:"奉天",sillim:"新林",sindaebang:"新大方",gurodigital:"九老デジタル団地",daerim:"大林",munrae:"文来",yeongdeungpogu:"永登浦区庁",dangsan:"堂山",hapjeong:"合井",hongdae:"弘大入口",sinchon:"新村",idae:"梨大",ahyeon:"阿峴",chungjeongno:"忠正路",yongdap:"龍踏",sindap:"新踏",yongdu:"龍頭",
+ yeonsinnae:"ヨンシンネ",bulgwang:"仏光",nokbeon:"碌磻",hongje:"弘済",muakjae:"毋岳嶺",dongnimmun:"独立門",gyeongbok:"景福宮",anguk:"安国",chungmuro:"忠武路",dongdaeip:"東大入口",yaksu:"薬水",geumho:"金湖",oksu:"玉水",apgujeong:"狎鴎亭",sinsa:"新沙",jamwon:"蚕院",gosok:"高速ターミナル",nambuterminal:"南部ターミナル",yangjae:"良才",
+ seongsin:"誠信女大入口",hanseongdae:"漢城大入口",hyehwa:"恵化",myeongdong:"明洞",hoehyeon:"会賢",sukdae:"淑大入口",samgakji:"三角地",sinyongsan:"新龍山",ichon:"二村",dongjak:"銅雀",chongsin:"総神大入口",namtaeryeong:"南泰嶺",seonbawi:"ソンバウイ",gyeongma:"競馬公園",daegongwon:"大公園",gwacheon:"果川",jeongbu:"政府果川庁舎",indeokwon:"仁徳院",pyeongchon:"坪村",beomgye:"ポムゲ",
+ yeouido:"汝矣島",yeoinaru:"汝矣ナル",mapo:"麻浦",gongdeok:"孔徳",aeogae:"エオゲ",seodaemun:"西大門",gwanghwamun:"光化門",cheonggu:"青丘",singeumho:"新金湖",haengdang:"杏堂",majang:"馬場",dapsimni:"踏十里",janghanpyeong:"長漢坪",gunja:"君子",achasan:"峨嵯山",gwangnaru:"広ナル",cheonho:"千戸",
+ gusan:"亀山",dokbawi:"トクパウィ",yeokchon:"駅村",eungam:"鷹岩",saejeol:"セジョル",jeungsan:"甑山",worldcup:"ワールドカップ競技場",mapogu:"麻浦区庁",mangwon:"望遠",sangsu:"上水",gwangheungchang:"広興倉",daeheung:"大興",hyochang:"孝昌公園前",noksapyeong:"緑莎坪",itaewon:"梨泰院",hangangjin:"漢江鎮",beotigogae:"ポティゴゲ",
+ jangam:"長岩",dobongsan:"道峰山",suraksan:"水落山",madeul:"マドゥル",nowon:"蘆原",junggye:"中渓",hagye:"下渓",gongneung:"孔陵",taereung:"泰陵入口",meokgol:"モッコル",junghwa:"中和",sangbong:"上鳳",myeonmok:"面牧",sagajeong:"四佳亭",yongmasan:"龍馬山",jungok:"中谷",eorini:"子供大公園",ttukseomresort:"トゥクソム遊園地",cheongdam:"清潭",gangnamgu:"江南区庁",hakdong:"鶴洞",nonhyeon:"論峴",banpo:"盤浦",naebang:"内方",namseong:"南城",sungsildae:"崇実大入口",sangdo:"上道",jangseungbaegi:"チャンスンベギ",sindaebangsam:"新大方サムゴリ",boramae:"ポラメ",sinpung:"新豊",namguro:"南九老",cheolsan:"鉄山",gwangmyeongsageori:"光明サゴリ",cheonwang:"天旺",onsu:"温水",
+ gukhoe:"国会議事堂",saetgang:"セッカン",nodeul:"ノドゥル",heukseok:"黒石",gubanpo:"旧盤浦",sinbanpo:"新盤浦",sapyeong:"沙平",sinnonhyeon:"新論峴",eonju:"彦州",seonjeongneung:"宣靖陵",samseongjungang:"三成中央",bongeunsa:"奉恩寺"
+};
+const AREAS = [
+ {x:574,y:273,w:252,name:"景福宮・仁寺洞",rd:"キョンボックン・インサドン",one:"ソウルの浅草＋京都",c:"#ffe1a8"},
+ {x:132,y:421,w:176,name:"弘大",rd:"ホンデ",one:"ソウルの下北沢＋原宿",c:"#ffd3e8"},
+ {x:1000,y:690,w:170,name:"明洞",rd:"ミョンドン",one:"ソウルの渋谷",c:"#ffec99"},
+ {x:1514,y:258,w:190,name:"東大門",rd:"トンデムン",one:"ソウルのアメ横＋問屋街",c:"#d3f9d8"},
+ {x:1613,y:613,w:160,name:"聖水",rd:"ソンス",one:"ソウルの蔵前",c:"#ffe3d3"},
+ {x:500,y:875,w:205,name:"汝矣島",rd:"ヨイド",one:"ソウルの永田町＋中之島",c:"#d0ebff"},
+ {x:1864,y:1167,w:170,name:"蚕室",rd:"チャムシル",one:"ソウルのお台場",c:"#e5dbff"},
+ {x:1300,y:944,w:180,name:"江南",rd:"カンナム",one:"ソウルの六本木＋青山",c:"#c5f6fa"},
+ {x:1643,y:1310,w:185,name:"高速ターミナル",rd:"コソクターミナル",one:"ソウルのバスタ新宿",c:"#fff3bf"}
+];
+const LINEMETA = {
+ L1:{name:"1号線",c:"#0052A4",ends:["清涼里","衿井・水原"]},
+ L1B:{name:"1号線（光明シャトル）",c:"#0052A4",ends:["衿川区庁","光明"]},
+ L2:{name:"2号線",c:"#00A84D",loop:true},
+ L2B:{name:"2号線（聖水支線）",c:"#00A84D",ends:["聖水","新設洞"]},
+ L3:{name:"3号線",c:"#EF7C1C",ends:["ヨンシンネ・大化","良才・梧琴"]},
+ L4:{name:"4号線",c:"#00A5DE",ends:["誠信女大入口・堂古介","衿井・烏耳島"]},
+ L5:{name:"5号線",c:"#996CAC",ends:["金浦空港・傍花","千戸・河南黔丹山"]},
+ L6:{name:"6号線",c:"#CD7C2F",ends:["亀山・鷹岩","東廟前・新内"]},
+ L7:{name:"7号線",c:"#747F00",ends:["長岩","温水・富平区庁"]},
+ L9:{name:"9号線",c:"#BDB092",ends:["金浦空港・開花","総合運動場・中央報勲病院"]},
+ AREX:{name:"AREX（空港鉄道）",c:"#0090D2",ends:["ソウル駅","仁川空港2ターミナル"]}
+};
+const LINESTOPS = {
+ L1:["cheongnyangni","jegidong","sinseoldong","dongmyo","dongdaemun","jongno5","jongno3","jonggak","sicheong","seoul","namnyeong","yongsan","noryangjin","daebang","singil","yeongdeungpo","sindorim","guro","gasan","doksan","geumcheongu","seoksu","gwanak","anyang","myeonghak","geumjeong"],
+ L1B:["geumcheongu","gwangmyeong"],
+ L2:["sicheong","euljiro","euljiro3","euljiro4","ddp","sindang","sangwangsimni","wangsimni","hanyangdae","ttukseom","seongsu","geondae","guui","gangbyeon","jamsilnaru","jamsil","jamsilsaenae","jonghap","samseong","seolleung","yeoksam","gangnam","gyodae","seocho","bangbae","sadang","nakseongdae","seouldae","bongcheon","sillim","sindaebang","gurodigital","daerim","sindorim","munrae","yeongdeungpogu","dangsan","hapjeong","hongdae","sinchon","idae","ahyeon","chungjeongno"],
+ L2B:["seongsu","yongdap","sindap","yongdu","sinseoldong"],
+ L3:["yeonsinnae","bulgwang","nokbeon","hongje","muakjae","dongnimmun","gyeongbok","anguk","jongno3","euljiro3","chungmuro","dongdaeip","yaksu","geumho","oksu","apgujeong","sinsa","jamwon","gosok","gyodae","nambuterminal","yangjae"],
+ L4:["seongsin","hanseongdae","hyehwa","dongdaemun","ddp","chungmuro","myeongdong","hoehyeon","seoul","sukdae","samgakji","sinyongsan","ichon","dongjak","chongsin","sadang","namtaeryeong","seonbawi","gyeongma","daegongwon","gwacheon","jeongbu","indeokwon","pyeongchon","beomgye","geumjeong"],
+ L5:["gimpo","yeongdeungpogu","singil","yeouido","yeoinaru","mapo","gongdeok","aeogae","chungjeongno","seodaemun","gwanghwamun","jongno3","euljiro4","ddp","cheonggu","singeumho","haengdang","wangsimni","majang","dapsimni","janghanpyeong","gunja","achasan","gwangnaru","cheonho"],
+ L6:["gusan","yeonsinnae","dokbawi","bulgwang","yeokchon","eungam","saejeol","jeungsan","dmc","worldcup","mapogu","mangwon","hapjeong","sangsu","gwangheungchang","daeheung","gongdeok","hyochang","samgakji","noksapyeong","itaewon","hangangjin","beotigogae","yaksu","cheonggu","sindang","dongmyo"],
+ L7:["jangam","dobongsan","suraksan","madeul","nowon","junggye","hagye","gongneung","taereung","meokgol","junghwa","sangbong","myeonmok","sagajeong","yongmasan","jungok","gunja","eorini","geondae","ttukseomresort","cheongdam","gangnamgu","hakdong","nonhyeon","banpo","gosok","naebang","chongsin","namseong","sungsildae","sangdo","jangseungbaegi","sindaebangsam","boramae","sinpung","daerim","namguro","gasan","cheolsan","gwangmyeongsageori","cheonwang","onsu"],
+ L9:["gimpo","magoknaru","dangsan","gukhoe","yeouido","saetgang","noryangjin","nodeul","heukseok","dongjak","gubanpo","sinbanpo","gosok","sapyeong","sinnonhyeon","eonju","seonjeongneung","samseongjungang","bongeunsa","jonghap"],
+ AREX:["seoul","gongdeok","hongdae","dmc","magoknaru","gimpo","gyeyang","geomam","cheongna","yeongjong","unseo","cargo","incheon","incheon2"]
+};
+const DRAW = {
+ L1:["cheongnyangni","jegidong","sinseoldong","dongmyo","dongdaemun","jongno5","jongno3","jonggak","sicheong","seoul","namnyeong","yongsan","noryangjin","daebang","singil","yeongdeungpo","sindorim","guro","gasan","doksan","geumcheongu","seoksu","gwanak","anyang","myeonghak","geumjeong"],
+ L1B:["geumcheongu","gwangmyeong"],
+ L2:["sicheong","euljiro","euljiro3","euljiro4","ddp","sindang","sangwangsimni","wangsimni","hanyangdae","ttukseom","seongsu","geondae","guui","gangbyeon","jamsilnaru","jamsil","jamsilsaenae","jonghap","samseong","seolleung","yeoksam","gangnam","gyodae","seocho","bangbae","sadang","nakseongdae","seouldae","bongcheon","sillim","sindaebang","gurodigital","daerim","sindorim","munrae","yeongdeungpogu","dangsan","hapjeong","hongdae","sinchon","idae","ahyeon","chungjeongno","sicheong"],
+ L2B:["seongsu","yongdap","sindap","yongdu","sinseoldong"],
+ L3:["yeonsinnae","bulgwang","nokbeon","hongje","muakjae","dongnimmun","gyeongbok","anguk","jongno3","euljiro3","chungmuro","dongdaeip","yaksu","geumho","oksu","apgujeong","sinsa","jamwon","gosok","gyodae","nambuterminal","yangjae"],
+ L4:["seongsin","hanseongdae","hyehwa","dongdaemun","ddp","chungmuro","myeongdong","hoehyeon","seoul","sukdae","samgakji","sinyongsan","ichon","dongjak","chongsin","sadang","namtaeryeong","seonbawi","gyeongma","daegongwon","gwacheon","jeongbu","indeokwon","pyeongchon","beomgye","geumjeong"],
+ L5:["gimpo","yeongdeungpogu","singil","yeouido","yeoinaru","mapo","gongdeok","aeogae","chungjeongno","seodaemun","gwanghwamun","jongno3","euljiro4","ddp","cheonggu","singeumho","haengdang","wangsimni","majang","dapsimni","janghanpyeong","gunja","achasan","gwangnaru","cheonho"],
+ L6:["gusan","yeonsinnae","dokbawi","bulgwang","yeokchon","eungam","saejeol","jeungsan","dmc","worldcup","mapogu","mangwon","hapjeong","sangsu","gwangheungchang","daeheung","gongdeok","hyochang","samgakji","noksapyeong","itaewon","hangangjin","beotigogae","yaksu","cheonggu","sindang","dongmyo"],
+ L7:["jangam","dobongsan","suraksan","madeul","nowon","junggye","hagye","gongneung","taereung","meokgol","junghwa","sangbong","myeonmok","sagajeong","yongmasan","jungok","gunja","eorini","geondae","ttukseomresort","cheongdam","gangnamgu","hakdong","nonhyeon","banpo","gosok","naebang","chongsin","namseong","sungsildae","sangdo","jangseungbaegi","sindaebangsam","boramae","sinpung","daerim","namguro","gasan","cheolsan","gwangmyeongsageori","cheonwang","onsu"],
+ L9:["gimpo","magoknaru","dangsan","gukhoe","yeouido","saetgang","noryangjin","nodeul","heukseok","dongjak","gubanpo","sinbanpo","gosok","sapyeong","sinnonhyeon","eonju","seonjeongneung","samseongjungang","bongeunsa","jonghap"],
+ AREX:["incheon2","incheon","cargo","unseo","yeongjong","cheongna","geomam","gyeyang","gimpo","magoknaru","dmc","hongdae","gongdeok","seoul"]
+};
+const NS="http://www.w3.org/2000/svg";
+const scalable=[];
+function pt(p){return Array.isArray(p)?p:[ST[p].x,ST[p].y];}
+const linesG=document.getElementById("lines");
+Object.keys(DRAW).forEach(id=>{
+  const pl=document.createElementNS(NS,"polyline");
+  pl.setAttribute("points",DRAW[id].map(p=>pt(p).join(",")).join(" "));
+  pl.setAttribute("fill","none");pl.setAttribute("stroke",LINEMETA[id].c);
+  pl.setAttribute("stroke-width","6");pl.setAttribute("stroke-linejoin","round");pl.setAttribute("stroke-linecap","round");
+  pl.setAttribute("vector-effect","non-scaling-stroke");
+  if(id==="AREX")pl.setAttribute("stroke-dasharray","12 6");
+  linesG.appendChild(pl);
+});
+const arG=document.getElementById("areas");
+AREAS.forEach(a=>{
+  const g=document.createElementNS(NS,"g");
+  g.setAttribute("class","area");
+  g.setAttribute("transform","translate("+a.x+","+a.y+")");
+  scalable.push({el:g,x:a.x,y:a.y});
+  const r=document.createElementNS(NS,"rect");
+  r.setAttribute("x",0);r.setAttribute("y",0);r.setAttribute("width",a.w);r.setAttribute("height",68);
+  r.setAttribute("rx",10);r.setAttribute("fill",a.c);r.setAttribute("stroke","#fff");r.setAttribute("stroke-width","2");
+  g.appendChild(r);
+  const t1=document.createElementNS(NS,"text");
+  t1.setAttribute("class","an");t1.setAttribute("x",10);t1.setAttribute("y",22);t1.textContent=a.name;
+  g.appendChild(t1);
+  const tk=document.createElementNS(NS,"text");
+  tk.setAttribute("class","ak");tk.setAttribute("x",10);tk.setAttribute("y",42);tk.textContent=a.rd;
+  g.appendChild(tk);
+  const t2=document.createElementNS(NS,"text");
+  t2.setAttribute("class","ao");t2.setAttribute("x",10);t2.setAttribute("y",61);t2.textContent=a.one;
+  g.appendChild(t2);
+  arG.appendChild(g);
+});
+const markersG=document.getElementById("markers");
+const badgesG=document.getElementById("badges");
+const labelsG=document.getElementById("labels");
+const frontMarkersG=document.getElementById("frontmarkers");
+const frontBadgesG=document.getElementById("frontbadges");
+const frontLabelsG=document.getElementById("frontlabels");
+const stationParts={};
+Object.entries(ST).forEach(([id,s])=>{
+  let bgE=null;
+  const dotG=document.createElementNS(NS,"g");
+  dotG.setAttribute("transform","translate("+s.x+","+s.y+")");
+  const dotE={el:dotG,x:s.x,y:s.y}; scalable.push(dotE);
+  const c=document.createElementNS(NS,"circle");
+  c.setAttribute("cx",0);c.setAttribute("cy",0);
+  c.setAttribute("r",s.tr?12:8);
+  c.setAttribute("fill","#fff");c.setAttribute("stroke","#222");c.setAttribute("stroke-width",s.tr?2.4:1.6);
+  dotG.appendChild(c);
+  markersG.appendChild(dotG);
+  if(s.bd){
+    const bg=document.createElementNS(NS,"g");
+    bg.setAttribute("transform","translate("+s.x+","+s.y+")");
+    bgE={el:bg,x:s.x,y:s.y}; scalable.push(bgE);
+    s.bd.forEach((b,i)=>{
+      const bx=document.createElementNS(NS,"g");
+      bx.setAttribute("transform","translate(0,"+(-i*19)+")");
+      const r=document.createElementNS(NS,"rect");
+      r.setAttribute("x",-42);r.setAttribute("y",-27);r.setAttribute("width",36);r.setAttribute("height",16);
+      r.setAttribute("rx",8);r.setAttribute("fill",LINEMETA[b[0]].c);
+      bx.appendChild(r);
+      const t=document.createElementNS(NS,"text");
+      t.setAttribute("class","bd");t.setAttribute("x",-24);t.setAttribute("y",-15);
+      t.setAttribute("text-anchor","middle");t.textContent=b[1];
+      bx.appendChild(t);
+      bg.appendChild(bx);
+    });
+    badgesG.appendChild(bg);
+  }
+  const lbl=document.createElementNS(NS,"g");
+  lbl.setAttribute("class","lbl");
+  const anchor=s.ax==="e"?"end":(s.ax==="m"?"middle":"start");
+  const X=s.x+s.lx, Y=s.y+s.ly;
+  lbl.setAttribute("transform","translate("+X+","+Y+")");
+  const lblE={el:lbl,x:X,y:Y}; scalable.push(lblE);
+  const lines=[["jn",NAME[id]],["kk",s.kk.split("|").join("")],["hg",s.hg]];
+  if(s.kk.includes("|")){
+    lines[1]=["kk",s.kk.split("|")[0]];
+    lines.splice(2,0,["kk",s.kk.split("|")[1]]);
+  }
+  lines.forEach(([cls,txt],i)=>{
+    const t=document.createElementNS(NS,"text");
+    t.setAttribute("class",cls);t.setAttribute("x",0);t.setAttribute("y",i*20);
+    t.setAttribute("text-anchor",anchor);t.textContent=txt;
+    lbl.appendChild(t);
+  });
+  const wrap=document.createElementNS(NS,"g");
+  wrap.setAttribute("class","lvl"+s.lvl);
+  wrap.appendChild(lbl);
+  labelsG.appendChild(wrap);
+  stationParts[id]={root:wrap,lblE:lblE,bgE:bgE,dotE:dotE};
+});
+/* ズーム＆パン（ボタン／ホイール／ドラッグ／ピンチ対応） */
+const svg=document.getElementById("map"), vp=document.getElementById("vp"), info=document.getElementById("zinfo");
+let k=1,tx=20,ty=0;
+function tierFor(v){return v<1.35?0:(v<2.3?1:2);}
+function apply(){
+  vp.setAttribute("transform","translate("+tx+","+ty+") scale("+k+")");
+  const inv=Math.pow(k,-0.45);
+  scalable.forEach(o=>{o.el.setAttribute("transform","translate("+o.x+","+o.y+") scale("+(inv*(o.m||1))+")");});
+  const t=tierFor(k); svg.dataset.tier=t;
+  info.textContent="表示中："+(t===0?"主要駅のみ":(t===1?"主要駅＋準主要駅":"全駅"))+"（"+Math.round(k*100)+"%）";
+}
+function zoomAt(cx,cy,f){
+  const nk=Math.min(4.5,Math.max(1,k*f)); if(nk===k)return;
+  const r=nk/k; tx=cx-(cx-tx)*r; ty=cy-(cy-ty)*r; k=nk; apply();
+}
+document.getElementById("zin").onclick=()=>zoomAt(VW/2,VH/2,1.4);
+document.getElementById("zout").onclick=()=>zoomAt(VW/2,VH/2,1/1.4);
+document.getElementById("zreset").onclick=()=>{k=1;tx=20;ty=0;searchHL=null;const sa=document.getElementById("searchact");if(sa)sa.hidden=true;refreshRouteHL(lastRouteHL);apply();};
+function toSvg(e){
+  const r=svg.getBoundingClientRect();
+  return [(e.clientX-r.left)/r.width*VW,(e.clientY-r.top)/r.height*VH];
+}
+svg.addEventListener("wheel",e=>{e.preventDefault();const [x,y]=toSvg(e);zoomAt(x,y,e.deltaY<0?1.15:1/1.15);},{passive:false});
+const pointers=new Map();
+let pinch=null;
+svg.addEventListener("pointerdown",e=>{
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  svg.setPointerCapture(e.pointerId);
+  svg.classList.add("dragging");
+  if(pointers.size===2){
+    const [p1,p2]=[...pointers.values()];
+    const r=svg.getBoundingClientRect();
+    const m0=[(p1.x+p2.x)/2,(p1.y+p2.y)/2];
+    pinch={d:Math.hypot(p1.x-p2.x,p1.y-p2.y),
+           mid:[(m0[0]-r.left)/r.width*VW,(m0[1]-r.top)/r.height*VH],
+           k:k,tx:tx,ty:ty};
+  }
+});
+svg.addEventListener("pointermove",e=>{
+  if(!pointers.has(e.pointerId))return;
+  const prev=pointers.get(e.pointerId);
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const r=svg.getBoundingClientRect();
+  if(pinch&&pointers.size===2){
+    const [p1,p2]=[...pointers.values()];
+    const d=Math.hypot(p1.x-p2.x,p1.y-p2.y);
+    const m=[(p1.x+p2.x)/2,(p1.y+p2.y)/2];
+    const mid=[(m[0]-r.left)/r.width*VW,(m[1]-r.top)/r.height*VH];
+    const nk=Math.min(4.5,Math.max(1,pinch.k*(d/pinch.d)));
+    const wx=(pinch.mid[0]-pinch.tx)/pinch.k, wy=(pinch.mid[1]-pinch.ty)/pinch.k;
+    k=nk; tx=mid[0]-wx*k; ty=mid[1]-wy*k;
+    apply();
+  }else if(pointers.size===1){
+    tx+=(e.clientX-prev.x)/r.width*VW;
+    ty+=(e.clientY-prev.y)/r.height*VH;
+    apply();
+  }
+});
+function endPointer(e){
+  pointers.delete(e.pointerId);
+  if(pointers.size<2)pinch=null;
+  if(pointers.size===0)svg.classList.remove("dragging");
+}
+svg.addEventListener("pointerup",endPointer);
+svg.addEventListener("pointercancel",endPointer);
+svg.addEventListener("dblclick",e=>{const [x,y]=toSvg(e);zoomAt(x,y,1.5);});
+apply();
+/* ルート表示中は出発・乗り換え・到着駅のラベルと駅番号バッジを拡大し、ティアで間引かれないようにする */
+let searchHL=null, lastRouteHL=[], lastTransferHL=[];
+function drawSearchMark(){
+  const g=document.getElementById("searchmark");
+  if(!g)return;
+  g.innerHTML="";
+  if(!searchHL||!ST[searchHL])return;
+  const s=ST[searchHL];
+  const pulse=document.createElementNS(NS,"circle");
+  pulse.setAttribute("cx",s.x);pulse.setAttribute("cy",s.y);pulse.setAttribute("r",22);
+  pulse.setAttribute("fill","none");pulse.setAttribute("stroke","#e0218a");pulse.setAttribute("stroke-width","5");pulse.setAttribute("stroke-opacity","0.85");
+  const a1=document.createElementNS(NS,"animate");
+  a1.setAttribute("attributeName","r");a1.setAttribute("values","22;42");a1.setAttribute("dur","1.6s");a1.setAttribute("repeatCount","indefinite");
+  pulse.appendChild(a1);
+  const a2=document.createElementNS(NS,"animate");
+  a2.setAttribute("attributeName","stroke-opacity");a2.setAttribute("values","0.85;0");a2.setAttribute("dur","1.6s");a2.setAttribute("repeatCount","indefinite");
+  pulse.appendChild(a2);
+  g.appendChild(pulse);
+  const ring=document.createElementNS(NS,"circle");
+  ring.setAttribute("cx",s.x);ring.setAttribute("cy",s.y);ring.setAttribute("r",23);
+  ring.setAttribute("fill","none");ring.setAttribute("stroke","#e0218a");ring.setAttribute("stroke-width","5.5");
+  g.appendChild(ring);
+}
+function refreshRouteHL(ids,transfers){
+  lastRouteHL=ids;
+  if(transfers!==undefined)lastTransferHL=transfers;
+  const set=new Set(ids);
+  const tset=new Set(lastTransferHL);
+  Object.entries(stationParts).forEach(([id,p])=>{
+    const on=set.has(id), srch=id===searchHL;
+    const sel=on||srch;
+    /* 乗り換え駅は出発駅の拡大時の60%（ラベル・バッジ: 2.7×0.6=1.62、マーカー: 1×0.6） */
+    const isTr=on&&tset.has(id)&&!srch;
+    p.root.classList.toggle("routehl",sel);
+    [p.lblE,p.bgE].forEach(e=>{if(e)e.m=sel?(isTr?2.7*0.6:2.7):1;});
+    if(p.dotE)p.dotE.m=srch?2.2:(isTr?0.6:1);
+    /* 選択中の駅はマーカー・バッジ・ラベルを最前面レイヤーへ移し、解除時は通常レイヤーへ戻す */
+    if(sel){
+      if(p.dotE)frontMarkersG.appendChild(p.dotE.el);
+      if(p.bgE)frontBadgesG.appendChild(p.bgE.el);
+      frontLabelsG.appendChild(p.root);
+    }else{
+      if(p.dotE)markersG.appendChild(p.dotE.el);
+      if(p.bgE)badgesG.appendChild(p.bgE.el);
+      labelsG.appendChild(p.root);
+    }
+  });
+  drawSearchMark();
+}
+/* ルート検索 */
+const EDGE_MIN=2, TRANSFER_MIN=5;
+const stationLines={};
+Object.keys(LINESTOPS).forEach(id=>{
+  LINESTOPS[id].forEach(s=>{(stationLines[s]=stationLines[s]||[]).push(id);});
+});
+function neighbors(state){
+  const [st,ln]=state.split("|");
+  const seq=LINESTOPS[ln], i=seq.indexOf(st), out=[];
+  const step=j=>{
+    if(j<0||j>=seq.length)return;
+    out.push({to:seq[j]+"|"+ln,cost:EDGE_MIN,ride:{line:ln,from:st,to:seq[j]}});
+  };
+  step(i-1); step(i+1);
+  if(LINEMETA[ln].loop && seq.length>2){
+    if(i===0)out.push({to:seq[seq.length-1]+"|"+ln,cost:EDGE_MIN,ride:{line:ln,from:st,to:seq[seq.length-1]}});
+    if(i===seq.length-1)out.push({to:seq[0]+"|"+ln,cost:EDGE_MIN,ride:{line:ln,from:st,to:seq[0]}});
+  }
+  stationLines[st].forEach(l2=>{
+    if(l2!==ln)out.push({to:st+"|"+l2,cost:TRANSFER_MIN,transfer:{line:l2,at:st}});
+  });
+  return out;
+}
+function findRoute(from,to){
+  const dist={}, prev={}, pq=[];
+  stationLines[from].forEach(ln=>{const s=from+"|"+ln;dist[s]=0;pq.push([0,s]);});
+  let goal=null;
+  while(pq.length){
+    pq.sort((a,b)=>a[0]-b[0]);
+    const [d,s]=pq.shift();
+    if(d>dist[s])continue;
+    if(s.split("|")[0]===to){goal=s;break;}
+    neighbors(s).forEach(n=>{
+      const nd=d+n.cost;
+      if(dist[n.to]===undefined||nd<dist[n.to]){
+        dist[n.to]=nd; prev[n.to]={from:s,via:n}; pq.push([nd,n.to]);
+      }
+    });
+  }
+  if(!goal)return null;
+  const steps=[]; let cur=goal;
+  while(prev[cur]){steps.unshift(prev[cur].via); cur=prev[cur].from;}
+  return {minutes:dist[goal],steps};
+}
+const AREA_IMG = {
+ incheon:"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1f/Korea-Incheon-International-Airport-Deperture-lobby-check-in-counter.JPG/1280px-Korea-Incheon-International-Airport-Deperture-lobby-check-in-counter.JPG",
+ gimpo:"https://upload.wikimedia.org/wikipedia/commons/c/ca/Gimpo-International-apron.JPG",
+ dmc:"https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/Digital_Media_City_Station_20220701_001.jpg/1280px-Digital_Media_City_Station_20220701_001.jpg",
+ hongdae:"https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5e/Hongdae%2C_Seoul-_Part_II_-_Hongdae2237.jpg/1280px-Hongdae%2C_Seoul-_Part_II_-_Hongdae2237.jpg",
+ sinchon:"https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/South_Korea%2C_Seoul%2C_Sinchon-dong%2C_%EC%97%B0%EC%84%B8%EB%8C%80%ED%95%99%EA%B5%90_%EC%97%B0%ED%9D%AC%EA%B4%80_-_panoramio.jpg/1280px-South_Korea%2C_Seoul%2C_Sinchon-dong%2C_%EC%97%B0%EC%84%B8%EB%8C%80%ED%95%99%EA%B5%90_%EC%97%B0%ED%9D%AC%EA%B4%80_-_panoramio.jpg",
+ sicheong:"https://upload.wikimedia.org/wikipedia/commons/1/12/Cantbeokay_seoul_city_hall_plaza_2.jpg",
+ euljiro:"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/A_paper_wholesaler_in_Euljiro_printing_alley.jpg/1280px-A_paper_wholesaler_in_Euljiro_printing_alley.jpg",
+ gwanghwamun:"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Gwanghwamun_December_2023.jpg/1280px-Gwanghwamun_December_2023.jpg",
+ gyeongbok:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/Front_view_of_the_Imperial_Throne_Hall_Geunjeongjeon_at_Gyeongbokgung_Palace_with_blue_sky_in_Seoul.jpg/1280px-Front_view_of_the_Imperial_Throne_Hall_Geunjeongjeon_at_Gyeongbokgung_Palace_with_blue_sky_in_Seoul.jpg",
+ anguk:"https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/Bukchon-ro_11-gil_street_with_hanok_houses_at_blue_hour_in_Bukchon_Hanok_Village_Seoul.jpg/1280px-Bukchon-ro_11-gil_street_with_hanok_houses_at_blue_hour_in_Bukchon_Hanok_Village_Seoul.jpg",
+ jongno3:"https://thumb.wikimedia.org/wikipedia/commons/thumb/8/81/Gwangjang_Market%2C_Seoul_02.jpg/1280px-Gwangjang_Market%2C_Seoul_02.jpg",
+ dongdaemun:"https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c9/20240601_144028_Dongdaemun_Design_Plaza%2C_Seoul_08.jpg/1280px-20240601_144028_Dongdaemun_Design_Plaza%2C_Seoul_08.jpg",
+ ddp:"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/DDP_-_Garden_of_withe_roses.jpg/1280px-DDP_-_Garden_of_withe_roses.jpg",
+ chungmuro:"https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3a/N_Seoul_Tower_view_2.jpg/1280px-N_Seoul_Tower_view_2.jpg",
+ dongdaeip:"https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b5/Namsan_Tower%2C_Seoul_-_Namsan2299.jpg/1280px-Namsan_Tower%2C_Seoul_-_Namsan2299.jpg",
+ yaksu:"https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/Seoul-metro-333-Yaksu-station-platform-20181125-083352.jpg/1280px-Seoul-metro-333-Yaksu-station-platform-20181125-083352.jpg",
+ oksu:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/Cityscape_of_Yeouido_skyscrapers_and_Hangang_Railway_Bridge_20240501113854.jpg/1280px-Cityscape_of_Yeouido_skyscrapers_and_Hangang_Railway_Bridge_20240501113854.jpg",
+ apgujeong:"https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Apgujeong_Rodeo_Station_6.JPG/1280px-Apgujeong_Rodeo_Station_6.JPG",
+ myeongdong:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Myeongdong2.JPG/1280px-Myeongdong2.JPG",
+ hoehyeon:"https://thumb.wikimedia.org/wikipedia/commons/thumb/4/49/Korea-Seoul-Namdaemun-Sungnyemun-27.jpg/1280px-Korea-Seoul-Namdaemun-Sungnyemun-27.jpg",
+ seoul:"https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/KNR-Seoul-Station-old-light-up.JPG/1280px-KNR-Seoul-Station-old-light-up.JPG",
+ yongsan:"https://upload.wikimedia.org/wikipedia/commons/2/27/YongsanTerminalMart.JPG",
+ guro:"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/%EA%B5%AC%EB%A1%9C%EB%94%94%EC%A7%80%ED%84%B8%EB%8B%A8%EC%A7%80%EC%97%AD_-_panoramio.jpg/1280px-%EA%B5%AC%EB%A1%9C%EB%94%94%EC%A7%80%ED%84%B8%EB%8B%A8%EC%A7%80%EC%97%AD_-_panoramio.jpg",
+ cheongnyangni:"https://upload.wikimedia.org/wikipedia/commons/a/ae/Seoul-Cheongnyangni-01.jpg",
+ wangsimni:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Q17184_Wangsimni_A06.JPG/1280px-Q17184_Wangsimni_A06.JPG",
+ seongsu:"https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Seongsu_seoul_4.jpg/1280px-Seongsu_seoul_4.jpg",
+ geondae:"https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6f/Seoul_Campus.jpg/1280px-Seoul_Campus.jpg",
+ jamsil:"https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Lotte_World_morning_view_8.jpg/1280px-Lotte_World_morning_view_8.jpg",
+ samseong:"https://thumb.wikimedia.org/wikipedia/commons/thumb/0/00/Library_in_Seoul_%2853608020746%29.jpg/1280px-Library_in_Seoul_%2853608020746%29.jpg",
+ gangnam:"https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Teheran-ro_Yeongdong-daero_crossing_6.jpg/1280px-Teheran-ro_Yeongdong-daero_crossing_6.jpg",
+ gyodae:"https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/Seoul-metro-Seoul-national-university-of-education-station-entrance-12-20181123-135218.jpg/1280px-Seoul-metro-Seoul-national-university-of-education-station-entrance-12-20181123-135218.jpg",
+ sadang:"https://thumb.wikimedia.org/wikipedia/commons/thumb/7/77/Gwanaksan_Mountain_01_%2816741408044%29.jpg/1280px-Gwanaksan_Mountain_01_%2816741408044%29.jpg",
+ sindorim:"https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/Korail_Sindorim_Station_platform.jpg/1280px-Korail_Sindorim_Station_platform.jpg",
+ dangsan:"https://thumb.wikimedia.org/wikipedia/commons/thumb/7/77/Seoul_Seonyudo_Park.jpg/1280px-Seoul_Seonyudo_Park.jpg",
+ hapjeong:"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/Mercado_Mangwon_en_Se%C3%BAl.jpg/1280px-Mercado_Mangwon_en_Se%C3%BAl.jpg",
+ gongdeok:"https://upload.wikimedia.org/wikipedia/commons/f/fa/Mapo%2C_Seoul.jpg",
+ mapo:"https://upload.wikimedia.org/wikipedia/commons/b/b1/Bruecke_uebern_Hangang_%285029424532%29.jpg",
+ yeouido:"https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Korea-Seoul-Yeouido-National_Assembly_Building-07.jpg/1280px-Korea-Seoul-Yeouido-National_Assembly_Building-07.jpg",
+ samgakji:"https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/2019-04-11_Tanks_at_The_War_Memorial_of_Korean%2C_Seoul.jpg/1280px-2019-04-11_Tanks_at_The_War_Memorial_of_Korean%2C_Seoul.jpg",
+ itaewon:"https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/Itaewon-ro_in_2019.jpg/1280px-Itaewon-ro_in_2019.jpg",
+ dongmyo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Dongmyo_Shrine_Memorial_Hall_-_Seoul%2C_South_Korea_13-03140.JPG/1280px-Dongmyo_Shrine_Memorial_Hall_-_Seoul%2C_South_Korea_13-03140.JPG",
+ dongjak:"https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/Dongjak_Bridge.jpg/1280px-Dongjak_Bridge.jpg",
+ cheongdam:"https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/Cheongdam_Bridge_20260416_1.jpg/1280px-Cheongdam_Bridge_20260416_1.jpg",
+ gosok:"https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Express_Bus_Terminal_Station_20230408_004.jpg/1280px-Express_Bus_Terminal_Station_20230408_004.jpg",
+ jonghap:"https://upload.wikimedia.org/wikipedia/commons/e/e3/Olympic_Stadium_%285478399106%29.jpg"
+};
+const AREA_INFO = {
+ incheon:{n:"仁川空港",rd:"インチョンゴンハン",tag:"韓国到着の玄関口",c:"#0090D2",pts:["AREX（空港鉄道）の始発駅。ソウル市内へ約45〜60分","WOWPASSの機械は到着ロビーのCUコンビニ内にある（空港では日本円の両替チャージ不可）","第1・第2ターミナル間は無料シャトルバスで移動"]},
+ incheon2:{n:"仁川空港第2ターミナル",rd:"インチョンゴンハン",tag:"大韓航空などの国際線ターミナル",c:"#0090D2",pts:["大韓航空・デルタなどスカイチーム系が中心のターミナル","第1ターミナルとは無料シャトルバス・空港鉄道で1駅","AREXの終点。ソウル駅まで直通で約50分"]},
+ cargo:{n:"空港貨物庁舎",rd:"コンハンファムルチョンサ",tag:"貨物エリアの駅",c:"#0090D2",pts:["空港の貨物ターミナル勤務者向けの駅","観光での利用はほぼない通過駅"]},
+ unseo:{n:"雲西",rd:"ウンソ",tag:"空港新都市の住宅エリア",c:"#0090D2",pts:["空港勤務者のベッドタウンとして開発された街","ロッテマートなど生活施設が揃う"]},
+ yeongjong:{n:"永宗",rd:"ヨンジョン",tag:"永宗島の入口",c:"#0090D2",pts:["永宗島の住宅・リゾートエリアへの入口","空港まであと数駅の地点"]},
+ cheongna:{n:"青羅国際都市",rd:"チョンナグクチェドシ",tag:"仁川の新都市",c:"#0090D2",pts:["仁川西部の計画都市・青羅の最寄り駅","空港とソウルの中間地点にある"]},
+ geomam:{n:"黔岩",rd:"コマム",tag:"仁川西部の乗換駅",c:"#0090D2",pts:["仁川2号線との乗り換え駅","周辺は住宅エリア"]},
+ gyeyang:{n:"桂陽",rd:"ケヤン",tag:"仁川北部の住宅エリア",c:"#0090D2",pts:["仁川1号線との乗り換え駅","桂陽山登山の入口としても使われる"]},
+ gimpo:{n:"金浦空港",rd:"キンポゴンハン",tag:"国内線中心の空港",c:"#0090D2",pts:["国内線（済州・釜山など）の発着が中心","隣接のロッテモール金浦空港店で買い物・食事ができる","ソウル中心部まで電車で約25分と近い"]},
+ magoknaru:{n:"麻谷ナル",rd:"マゴンナル",tag:"麻谷지구の新興ビジネス街",c:"#0090D2",pts:["LGなど大企業の研究施設が集まる新興エリア","ソウル植物園が駅直結で人気"]},
+ dmc:{n:"上岩DMC",rd:"サンアム",tag:"放送局が集まるメディアの街",c:"#0090D2",pts:["MBC・SBSなど放送局が集まるエリア","ワールドカップ競技場も近い（6号線）","弘大入口までAREXで1駅"]},
+ cheongnyangni:{n:"清涼里",rd:"チョンニャンニ",tag:"伝統市場の街",c:"#8fb8d8",pts:["京東市場など大型の伝統市場が集まる","KTXで江陵など東方面へ行ける","薬令市場で韓方（漢方）関連の買い物"]},
+ jegidong:{n:"祭基洞",rd:"チェギドン",tag:"韓方市場の街",c:"#8fb8d8",pts:["ソウル薬令市場（韓方・漢方の市場）の最寄り","京東市場も徒歩圏"]},
+ sinseoldong:{n:"新設洞",rd:"シンソルトン",tag:"東部の乗換駅",c:"#8fb8d8",pts:["1号線と2号線聖水支線の乗り換え駅","ソウル風物市場（骨董・古物）が近い"]},
+ dongmyo:{n:"東廟",rd:"トンミョ",tag:"フリーマーケットの街",c:"#7fd08c",pts:["東廟フリーマーケットで古着・骨董品探し","東大門まで徒歩圏","ローカルな市場の雰囲気が濃いエリア"]},
+ dongdaemun:{n:"東大門",rd:"トンデムン",tag:"ソウルのアメ横＋問屋街",c:"#7fd08c",pts:["深夜まで営業するファッション問屋・ショッピングモール","デザイン施設DDPがランドマーク","東大門市場で布・服飾資材が何でも揃う"]},
+ jongno5:{n:"鐘路5街",rd:"チョンノオガ",tag:"広蔵市場の最寄り",c:"#f2b04a",pts:["広蔵市場まで徒歩数分。屋台グルメの名所","薬局・医療機器の問屋街もある"]},
+ jongno3:{n:"鐘路",rd:"チョンノ",tag:"市場と問屋の老舗エリア",c:"#f2b04a",pts:["広蔵市場まで徒歩圏。屋台グルメの名所","宝飾品や布の問屋街が広がる","仁寺洞・益善洞も近い"]},
+ jonggak:{n:"鐘閣",rd:"チョンガク",tag:"鐘路のビジネス街",c:"#f2b04a",pts:["除夜の鐘で知られる普信閣が目の前","教保文庫光化門店など大型書店が近い"]},
+ sicheong:{n:"市庁・光化門",rd:"シチョン",tag:"ソウルの中心・行政と歴史",c:"#f2b04a",pts:["徳寿宮やソウル広場がすぐ近く","光化門広場まで徒歩圏","明洞エリアにも歩いて行ける"]},
+ seoul:{n:"ソウル駅",rd:"ソウルヨク",tag:"鉄道のハブ",c:"#8fb8d8",pts:["KTXや空港鉄道AREXが集まる乗り換えの要所","駅直結のロッテマートでお土産調達ができる","市内各エリアへの地下鉄も充実"]},
+ namnyeong:{n:"南営",rd:"ナミョン",tag:"龍山の隣の住宅エリア",c:"#8fb8d8",pts:["ソウル駅と龍山駅の間の小さな駅","淑大入口エリアの飲食店が近い"]},
+ yongsan:{n:"龍山",rd:"ヨンサン",tag:"電子商店街と公園の街",c:"#8fb8d8",pts:["龍山電子商街で家電・PC関連の買い物","戦争記念館や龍山家族公園が近い","漢江・梨泰院方面への中継地点"]},
+ noryangjin:{n:"鷺梁津",rd:"ノリャンジン",tag:"水産市場と受験街",c:"#8fb8d8",pts:["鷺梁津水産市場で新鮮な海鮮グルメ","公務員試験の予備校が集まる受験生の街"]},
+ daebang:{n:"大方",rd:"テバン",tag:"住宅エリアの駅",c:"#8fb8d8",pts:["汝矣島と鷺梁津の間にある住宅街","新林線への乗り換え駅"]},
+ singil:{n:"新吉",rd:"シンギル",tag:"永登浦の住宅エリア",c:"#8fb8d8",pts:["1号線と5号線の乗り換え駅","周辺は落ち着いた住宅街"]},
+ yeongdeungpo:{n:"永登浦",rd:"ヨンドゥンポ",tag:"西部の商業中心",c:"#8fb8d8",pts:["ロッテ百貨店やタイムスクエアがある商業エリア","KTX・一般列車も停まる大きな駅"]},
+ sindorim:{n:"新道林",rd:"シンドリム",tag:"西部の乗換ハブ",c:"#8fb8d8",pts:["1号線と2号線の乗り換え駅で利用者が多い","駅直結のショッピング施設がある","弘大・市内中心部への中継地点"]},
+ guro:{n:"九老",rd:"クロ",tag:"庶民的なデジタル団地",c:"#8fb8d8",pts:["IT企業が集まる九老デジタル団地が近い","物価が安めのローカルな雰囲気","観光より乗換・通過の駅"]},
+ gasan:{n:"加山デジタル団地",rd:"カサンディジタルダンジ",tag:"IT企業とアウトレットの街",c:"#8fb8d8",pts:["ITベンチャー企業が集まるビジネスエリア","マリオアウトレットなど大型アウトレットが人気"]},
+ doksan:{n:"禿山",rd:"トクサン",tag:"衿川の住宅エリア",c:"#8fb8d8",pts:["加山と衿川区庁の間の住宅街","観光スポットは少なめの通過駅"]},
+ geumcheongu:{n:"衿川区庁",rd:"クムチョングチョン",tag:"光明シャトルの分岐駅",c:"#8fb8d8",pts:["KTX光明駅行きシャトル電車の分岐駅","衿川区庁の最寄り"]},
+ gwangmyeong:{n:"光明",rd:"クァンミョン",tag:"KTXの停車駅",c:"#8fb8d8",pts:["KTXが停まる大きな駅。釜山・木浦方面へ","IKEA光明店やロッテアウトレットが近い","市内からは衿川区庁からシャトル電車"]},
+ "seoksu":{n:"石水",rd:"ソクス",tag:"安養川沿いの住宅エリア",c:"#8fb8d8",pts:["安養川の散策路が近い","落ち着いた住宅街の駅"]},
+ gwanak:{n:"冠岳",rd:"クァナク",tag:"冠岳山のふもと",c:"#8fb8d8",pts:["冠岳山登山の入口の一つ","周辺は住宅エリア"]},
+ anyang:{n:"安養",rd:"アニャン",tag:"京畿道南部の中心都市",c:"#8fb8d8",pts:["安養一番街など繁華街がある中心駅","ソウル都心まで電車で約30分"]},
+ myeonghak:{n:"鳴鶴",rd:"ミョンハク",tag:"安養の住宅エリア",c:"#8fb8d8",pts:["安養と衿井の間の住宅街の駅"]},
+ geumjeong:{n:"衿井",rd:"クムジョン",tag:"1号線と4号線の乗換駅",c:"#8fb8d8",pts:["1号線（京釜線）と4号線（安山線）の乗り換え駅","軍浦市の中心エリア"]},
+ euljiro:{n:"乙支路",rd:"ウルチロ",tag:"レトロな飲み屋街「ヒプチロ」",c:"#f2b04a",pts:["古い印刷所・工具街に新しい店が混ざる注目のエリア","路地の飲み屋・グルメが楽しい","明洞・鐘路のどちらへも近い"]},
+ euljiro3:{n:"乙支路3街",rd:"ウルチロサムガ",tag:"ヒプチロの中心",c:"#f2b04a",pts:["レトロな飲み屋街「ヒプチロ」の中心エリア","2号線と3号線の乗り換え駅","明洞まで徒歩圏"]},
+ euljiro4:{n:"乙支路4街",rd:"ウルチロサガ",tag:"工具・照明の問屋街",c:"#f2b04a",pts:["工具・照明・生地の問屋が集まるエリア","2号線と5号線の乗り換え駅","広蔵市場も近い"]},
+ ddp:{n:"東大門",rd:"トンデムン",tag:"ソウルのアメ横＋問屋街",c:"#7fd08c",pts:["DDP（東大門デザインプラザ）が目の前","深夜ショッピングの中心地","市場グルメや屋台も充実"]},
+ sindang:{n:"新堂",rd:"シンダン",tag:"トッポッキタウンの街",c:"#7fd08c",pts:["新堂洞トッポッキタウンが有名","2号線と6号線の乗り換え駅","東大門エリアまで近い"]},
+ sangwangsimni:{n:"上往十里",rd:"サンワンシムニ",tag:"往十里の隣の住宅エリア",c:"#7fd08c",pts:["往十里駅の隣の小さな駅","周辺は住宅街"]},
+ wangsimni:{n:"往十里",rd:"ワンシムニ",tag:"東部の乗換ハブ",c:"#7fd08c",pts:["多くの路線が交わる乗り換え駅","周辺は大学・住宅街で落ち着いた雰囲気","聖水・建大エリアへのアクセスが良い"]},
+ hanyangdae:{n:"漢陽大",rd:"ハニャンデ",tag:"漢陽大学前の学生街",c:"#7fd08c",pts:["漢陽大学・漢陽女子大学の最寄り駅","学生向けの安い飲食店が多い"]},
+ ttukseom:{n:"トゥクソム",rd:"トゥクソム",tag:"漢江公園の入口",c:"#f0a35e",pts:["トゥクソム漢江公園の最寄り","聖水エリアまで徒歩圏"]},
+ seongsu:{n:"聖水",rd:"ソンス",tag:"ソウルの蔵前",c:"#f0a35e",pts:["工場をリノベしたおしゃれカフェが急増中","ソウルの森公園が散歩に最適","雑貨店やベーカリー巡りが楽しい新興エリア"]},
+ geondae:{n:"建大",rd:"コンデ",tag:"若者の飲み屋街",c:"#f0a35e",pts:["建国大学前の学生街で居酒屋・屋台が多い","ショッピングモールCOMMON GROUNDが名物","漢江（トゥクソム）公園も近い"]},
+ guui:{n:"九宜",rd:"クイ",tag:"東ソウルの住宅エリア",c:"#f0a35e",pts:["江辺駅（東ソウルターミナル）の隣駅","周辺は住宅街"]},
+ gangbyeon:{n:"江辺",rd:"カンビョン",tag:"東ソウルバスターミナル",c:"#f0a35e",pts:["東ソウル総合ターミナルから地方都市へバス移動できる","テクノマート（家電・ITモール）が駅直結"]},
+ jamsilnaru:{n:"蚕室ナル",rd:"チャムシルナル",tag:"漢江沿いの住宅エリア",c:"#b9a5e8",pts:["蚕室漢江公園が近い","ロッテワールドタワー方面への入口の一つ"]},
+ jamsil:{n:"蚕室",rd:"チャムシル",tag:"ソウルのお台場",c:"#b9a5e8",pts:["ロッテワールドとロッテワールドタワーがランドマーク","石村湖の散策や桜が人気","大型モールで買い物・グルメが完結する"]},
+ jamsilsaenae:{n:"蚕室セネ",rd:"チャムシルセネ",tag:"蚕室の飲食店街",c:"#b9a5e8",pts:["蚕室駅の隣。飲食店や居酒屋が集まる","ロッテワールドまで徒歩圏"]},
+ jonghap:{n:"総合運動場",rd:"チョンハプンドンジャン",tag:"スポーツ・ライブの会場エリア",c:"#b9a5e8",pts:["蚕室野球場やスタジアムの最寄り駅","コンサートやスポーツ観戦の日は混雑する","蚕室・石村エリアまで徒歩圏"]},
+ samseong:{n:"三成・COEX",rd:"サムソン",tag:"ビジネスと大型モールの街",c:"#b9a5e8",pts:["COEXモールとピョルマダン図書館が有名","展示会・ビジネス利用が多いエリア","江南中心部まで地下鉄で数駅"]},
+ seolleung:{n:"宣陵",rd:"ソンヌン",tag:"世界遺産の王陵がある街",c:"#b9a5e8",pts:["朝鮮王陵（宣陵・靖陵）が駅前の公園に","江南のオフィス街の一角"]},
+ yeoksam:{n:"駅三",rd:"ヨクサム",tag:"江南のオフィス街",c:"#6cc7cf",pts:["スタートアップやIT企業が集まるエリア","江南駅まで1駅"]},
+ gangnam:{n:"江南",rd:"カンナム",tag:"ソウルの六本木＋青山",c:"#6cc7cf",pts:["美容クリニックとオフィスが集まる繁華街","地下ショッピングモールで買い物が便利","カフェやグルメの選択肢が非常に多い"]},
+ gyodae:{n:"教大・瑞草",rd:"キョデ・ソチョ",tag:"江南に隣接するオフィス街",c:"#6cc7cf",pts:["裁判所・検察庁がある行政エリア","江南駅まで2号線で2駅","落ち着いたビジネス街の雰囲気"]},
+ seocho:{n:"瑞草",rd:"ソチョ",tag:"法曹エリアのオフィス街",c:"#6cc7cf",pts:["裁判所・検察庁が集まるエリア","芸術の殿堂へもバスで近い"]},
+ bangbae:{n:"方背",rd:"パンベ",tag:"江南西部の住宅エリア",c:"#6cc7cf",pts:["カフェ通りがある落ち着いた住宅街","舎堂・教大の中間地点"]},
+ sadang:{n:"舎堂",rd:"サダン",tag:"南部の乗換ハブ",c:"#6cc7cf",pts:["2号線と4号線が交わる大きな乗り換え駅","冠岳山登山の入口として人気","周辺に飲食店が多い"]},
+ nakseongdae:{n:"落星大",rd:"ナクソンデ",tag:"冠岳山登山口",c:"#6cc7cf",pts:["冠岳山登山の代表的な入口","ソウル大学エリアにも近い"]},
+ seouldae:{n:"ソウル大入口",rd:"ソウルデイック",tag:"ソウル大学の玄関口",c:"#6cc7cf",pts:["ソウル大学へはここからバスに乗り換え","シャロスキルなど学生街グルメが充実"]},
+ bongcheon:{n:"奉天",rd:"ポンチョン",tag:"冠岳の住宅エリア",c:"#6cc7cf",pts:["ソウル大学エリアに近い住宅街","物価が安めのローカルな雰囲気"]},
+ sillim:{n:"新林",rd:"シンリム",tag:"考試村のある学生街",c:"#6cc7cf",pts:["司法試験などの考試村（受験生の街）で知られる","スンデタウンなど安いグルメが多い"]},
+ sindaebang:{n:"新大方",rd:"シンデバン",tag:"冠岳西部の住宅エリア",c:"#6cc7cf",pts:["ポラメ公園が近い","周辺は住宅街"]},
+ gurodigital:{n:"九老デジタル団地",rd:"クロディジタルダンジ",tag:"IT企業の集積地",c:"#8fb8d8",pts:["IT・ベンチャー企業が集まるオフィスエリア","飲食店が多くランチの選択肢が豊富"]},
+ daerim:{n:"大林",rd:"テリム",tag:"中華街のある多文化エリア",c:"#8fb8d8",pts:["チャイナタウンがあり中華グルメが充実","2号線と7号線の乗り換え駅"]},
+ munrae:{n:"文来",rd:"ムンレ",tag:"鉄工所とアートの街",c:"#8fb8d8",pts:["鉄工所街にアトリエやカフェが増えているエリア","文来創作村として注目される"]},
+ yeongdeungpogu:{n:"永登浦区庁",rd:"ヨンドゥンポグチョン",tag:"永登浦の行政中心",c:"#8fb8d8",pts:["永登浦区庁の最寄り駅","2号線と5号線の乗り換え駅"]},
+ dangsan:{n:"堂山",rd:"タンサン",tag:"漢江に近い住宅エリア",c:"#8fb8d8",pts:["仙遊島公園など漢江沿いの散策が楽しめる","汝矣島・合井のどちらにも近い","落ち着いた住宅街の雰囲気"]},
+ hapjeong:{n:"合井",rd:"ハプチョン",tag:"弘大の隣のカフェ街",c:"#ff8fb5",pts:["弘大入口まで徒歩圏で、カフェやライブハウスが多い","望遠市場などローカルな市場も近い","落ち着いた住宅街と店が混ざるエリア"]},
+ hongdae:{n:"弘大",rd:"ホンデ",tag:"ソウルの下北沢＋原宿",c:"#ff8fb5",pts:["若者文化の中心地。カフェ、路上ライブ、クラブが多い","ショッピングと安めのグルメが充実","空港鉄道も使えて、空港アクセスも便利"]},
+ sinchon:{n:"新村",rd:"シンチョン",tag:"学生街で物価が安め",c:"#ff8fb5",pts:["延世大学など大学が集まる学生街","チェーン店や安く食べられる店が多い","弘大エリアまで徒歩でも行ける距離"]},
+ idae:{n:"梨大",rd:"イデ",tag:"梨花女子大学前のショッピング街",c:"#ff8fb5",pts:["梨花女子大学前の女性向けショップ通り","ウェディング・写真スタジオも多い"]},
+ ahyeon:{n:"阿峴",rd:"アヒョン",tag:"新村と市庁の間の住宅エリア",c:"#ff8fb5",pts:["ウェディングタウン（式場街）で知られる","落ち着いた住宅街"]},
+ chungjeongno:{n:"忠正路",rd:"チュンジョンノ",tag:"西大門の住宅・オフィス街",c:"#f2b04a",pts:["2号線と5号線の乗り換え駅","市庁・光化門エリアまで近い"]},
+ yongdap:{n:"龍踏",rd:"ヨンダプ",tag:"聖水支線の小さな駅",c:"#f0a35e",pts:["2号線聖水支線の駅","周辺は住宅エリア"]},
+ sindap:{n:"新踏",rd:"シンダプ",tag:"東部の住宅エリア",c:"#f0a35e",pts:["中浪川沿いの住宅街","清渓川方面へも近い"]},
+ yongdu:{n:"龍頭",rd:"ヨンドゥ",tag:"清渓川近くの住宅エリア",c:"#f0a35e",pts:["清渓川や東廟エリアに近い","新設洞まであと1駅"]},
+ yeonsinnae:{n:"ヨンシンネ",rd:"ヨンシンネ",tag:"恩平の乗換ハブ",c:"#f2b04a",pts:["3号線と6号線の乗り換え駅","恩平区の商業中心"]},
+ bulgwang:{n:"仏光",rd:"プルグァン",tag:"恩平の住宅エリア",c:"#f2b04a",pts:["3号線と6号線の乗り換え駅","北漢山登山の入口にも近い"]},
+ nokbeon:{n:"碌磻",rd:"ノクボン",tag:"北漢山ふもとの住宅街",c:"#f2b04a",pts:["北漢山の登山口に近い","落ち着いた住宅エリア"]},
+ hongje:{n:"弘済",rd:"ホンジェ",tag:"北漢山・仁王山の入口",c:"#f2b04a",pts:["仁王山・北漢山登山の入口として人気","弘済川沿いの散策路がある"]},
+ muakjae:{n:"毋岳嶺",rd:"ムアクチェ",tag:"鞍山のふもと",c:"#f2b04a",pts:["鞍山（アンサン）の登山入口","独立門・景福宮方面への中継地点"]},
+ dongnimmun:{n:"独立門",rd:"トンニンムン",tag:"独立門と刑務所歴史館",c:"#f2b04a",pts:["独立門と西大門刑務所歴史館が目の前","歴史スポット巡りの拠点"]},
+ gyeongbok:{n:"景福宮・仁寺洞",rd:"キョンボックン・インサドン",tag:"ソウルの浅草＋京都",c:"#f2b04a",pts:["景福宮の観光はこの駅から。韓服レンタル店も多い","仁寺洞は伝統工芸品や伝統茶屋の通り","北村韓屋村の散策も徒歩圏"]},
+ anguk:{n:"仁寺洞・北村",rd:"インサドン・プクチョン",tag:"韓屋とギャラリーの街",c:"#f2b04a",pts:["北村韓屋村の散策スタート地点","仁寺洞の伝統茶屋・ギャラリー巡りに便利","韓屋カフェが点在する落ち着いたエリア"]},
+ chungmuro:{n:"忠武路",rd:"チュンムロ",tag:"南山への登り口",c:"#7fd08c",pts:["南山・Nソウルタワー方面へのバス乗り換えに便利","明洞まで徒歩圏","印刷・映画の街として知られる"]},
+ dongdaeip:{n:"奨忠・東国大学",rd:"チャンチュン",tag:"南山のふもと",c:"#7fd08c",pts:["南山散策や奨忠体育館へのアクセス","新羅ホテルが近い高級エリア","東大門・明洞のどちらにも近い"]},
+ yaksu:{n:"薬水",rd:"ヤクス",tag:"落ち着いた住宅エリア",c:"#7fd08c",pts:["観光地ではないが乗り換えに便利な駅","東大入口・新堂方面のグルメ店が点在","明洞・東大門へ短時間で出られる"]},
+ geumho:{n:"金湖",rd:"クモ",tag:"漢南・玉水の住宅エリア",c:"#f0a35e",pts:["漢江に近い高級住宅エリアの一角","玉水・漢南方面への中継地点"]},
+ oksu:{n:"玉水・漢南",rd:"オクス・ハンナム",tag:"漢江ビューの高級住宅街",c:"#f0a35e",pts:["漢江を望む立地で散策に良い","漢南エリアのカフェ・レストランが近い","梨泰院・狎鴎亭方面への中継地点"]},
+ apgujeong:{n:"狎鴎亭・清潭",rd:"アプクジョン・チョンダム",tag:"高級ブランドと美容の街",c:"#f0a35e",pts:["ロデオ通りに高級ブランド店が並ぶ","美容クリニック・皮膚科が多いエリア","ギャラリア百貨店がランドマーク"]},
+ sinsa:{n:"新沙",rd:"シンサ",tag:"カロスキルの街",c:"#f0a35e",pts:["カロスキル（並木通り）のカフェ・ブティックが人気","新盆唐線への乗り換え駅"]},
+ jamwon:{n:"蚕院",rd:"チャムウォン",tag:"盤浦漢江公園の入口",c:"#f0a35e",pts:["盤浦漢江公園・セビッ島方面の入口","落ち着いた住宅エリア"]},
+ gosok:{n:"高速ターミナル",rd:"コソクターミナル",tag:"ソウルのバスタ新宿",c:"#d9c25a",pts:["高速バスターミナルから地方都市へ移動できる","地下街「コトゥーモール」は服が安くて人気","新世界百貨店江南店が直結"]},
+ nambuterminal:{n:"南部ターミナル",rd:"ナンブターミナル",tag:"市外バスターミナル",c:"#d9c25a",pts:["南部市外バスターミナルから地方都市へ","芸術の殿堂（ソウルアーツセンター）が近い"]},
+ yangjae:{n:"良才",rd:"ヤンジェ",tag:"江南南部の乗換ハブ",c:"#6cc7cf",pts:["新盆唐線への乗り換え駅","良才川の散策路や市民の森が近い"]},
+ seongsin:{n:"誠信女大入口",rd:"ソンシンヨデイック",tag:"誠信女子大学前",c:"#7fd08c",pts:["誠信女子大学の最寄り駅","大学前の飲食店・カフェが多い"]},
+ hanseongdae:{n:"漢城大入口",rd:"ハンソンデイック",tag:"漢城大学・三仙橋エリア",c:"#7fd08c",pts:["漢城大学の最寄り駅","恵化・大学路エリアまで近い"]},
+ hyehwa:{n:"恵化・大学路",rd:"ヘファ・テハンノ",tag:"演劇の街・大学路",c:"#7fd08c",pts:["大学路は小劇場が集まる演劇の街","誠信女子大・成均館大学が近い","駱山公園の夜景もおすすめ"]},
+ myeongdong:{n:"明洞",rd:"ミョンドン",tag:"ソウルの渋谷",c:"#e8c93c",pts:["買い物とグルメの中心地。コスメ店・屋台が密集","両替所が多くレートも比較的良い","明洞聖堂やロッテ百貨店本店が近い"]},
+ hoehyeon:{n:"南大門",rd:"ナンデムン",tag:"韓国最大級の市場エリア",c:"#e8c93c",pts:["南大門市場で雑貨・グルメの買い物","明洞まで徒歩圏","ソウル駅にも近い"]},
+ sukdae:{n:"淑大入口",rd:"スクテイック",tag:"淑明女子大学前",c:"#8fb8d8",pts:["淑明女子大学の最寄り駅","大学前のカフェ・飲食店が多い"]},
+ samgakji:{n:"三角地",rd:"サムガクチ",tag:"戦争記念館の最寄り",c:"#8fb8d8",pts:["国立戦争記念館が目の前","龍山・梨泰院のどちらへも徒歩圏","落ち着いた住宅エリア"]},
+ sinyongsan:{n:"新龍山",rd:"シニョンサン",tag:"龍山の新興オフィスエリア",c:"#8fb8d8",pts:["アモーレパシフィック本社など大規模オフィスが集まる","龍山駅まで徒歩圏"]},
+ ichon:{n:"二村",rd:"イチョン",tag:"国立中央博物館の最寄り",c:"#8fb8d8",pts:["国立中央博物館・国立ハングル博物館が目の前","漢江沿いの静かな住宅エリア"]},
+ dongjak:{n:"動作",rd:"トンジャク",tag:"漢江ビューの住宅エリア",c:"#6cc7cf",pts:["国立顕忠院（国立墓地）が近い","漢江大橋方面の景色が良い","高速ターミナル・舎堂への中継地点"]},
+ chongsin:{n:"総神大入口（梨水）",rd:"チョンシンデイック",tag:"4号線と7号線の乗換駅",c:"#6cc7cf",pts:["駅名は路線で異なる（4号線=総神大入口／7号線=梨水）","舎堂・盤浦方面への中継地点"]},
+ namtaeryeong:{n:"南泰嶺",rd:"ナムテリョン",tag:"舎堂の隣の小さな駅",c:"#6cc7cf",pts:["ソウルと果川の境界にある駅","周辺は静かな住宅エリア"]},
+ seonbawi:{n:"ソンバウイ",rd:"ソンバウイ",tag:"果川への入口",c:"#6cc7cf",pts:["ソウル大公園方面への入口の一つ","周辺は緑が多いエリア"]},
+ gyeongma:{n:"競馬公園",rd:"キョンマゴンウォン",tag:"ソウル競馬公園の最寄り",c:"#6cc7cf",pts:["ソウル競馬公園（レッツランパーク）の最寄り駅","レース開催日は混雑する"]},
+ daegongwon:{n:"大公園",rd:"テゴンウォン",tag:"ソウル大公園の最寄り",c:"#6cc7cf",pts:["ソウル大公園（動物園・植物園）の最寄り駅","国립과천과학관も近い"]},
+ gwacheon:{n:"果川",rd:"クァチョン",tag:"果川市の中心",c:"#6cc7cf",pts:["果川市の中心駅","政府果川庁舎エリアに近い"]},
+ jeongbu:{n:"政府果川庁舎",rd:"チョンブクァチョンジョンサ",tag:"官公庁エリア",c:"#6cc7cf",pts:["政府果川庁舎（官公庁）の最寄り駅","果川市の行政中心"]},
+ indeokwon:{n:"仁徳院",rd:"インドグォン",tag:"安養北部の乗換ハブ",c:"#6cc7cf",pts:["安養市 동안区の交通拠点","飲食店が多い繁華街がある"]},
+ pyeongchon:{n:"坪村",rd:"ピョンチョン",tag:"安養の新都心",c:"#6cc7cf",pts:["坪村新都市の中心駅","塾街や商業施設が集まる"]},
+ beomgye:{n:"ポムゲ",rd:"ポムゲ",tag:"安養の繁華街",c:"#6cc7cf",pts:["ロデオ通りなど若者向けの繁華街","衿井まであと1駅"]},
+ yeouido:{n:"汝矣島",rd:"ヨイド",tag:"ソウルの永田町＋中之島",c:"#7db8e8",pts:["国会議事堂がある政治・金融の中心","IFCモールや現代百貨店ソウルで買い物","汝矣島漢江公園は桜とピクニックの名所"]},
+ yeoinaru:{n:"汝矣ナル",rd:"ヨイナル",tag:"漢江公園と遊覧船",c:"#7db8e8",pts:["汝矣島漢江公園の最寄り駅","漢江遊覧船の乗り場が近い"]},
+ mapo:{n:"麻浦",rd:"マポ",tag:"焼肉と川辺のグルメ街",c:"#c99a5b",pts:["麻浦ナル一帯は焼肉店や飲食店が密集","漢江公園（麻浦）への散策も近い","孔徳・弘大方面への中継地点"]},
+ gongdeok:{n:"孔徳",rd:"コンドク",tag:"市場のグルメ街",c:"#c99a5b",pts:["孔徳市場はチョクパル（豚足）横丁で有名","大企業のオフィスが集まるビジネス街","空港鉄道など路線が多い乗換駅"]},
+ aeogae:{n:"エオゲ",rd:"エオゲ",tag:"麻浦の住宅エリア",c:"#c99a5b",pts:["孔徳と忠正路の間の住宅街","落ち着いたローカルな雰囲気"]},
+ seodaemun:{n:"西大門",rd:"ソデムン",tag:"西大門区の行政中心",c:"#f2b04a",pts:["西大門独立公園や刑務所歴史館へバスで近い","光化門エリアまで1駅"]},
+ gwanghwamun:{n:"光化門",rd:"クァンファムン",tag:"景福宮の玄関口",c:"#f2b04a",pts:["光化門広場と世宗大王像がシンボル","景福宮・国立古宮博物館の最寄り","周辺は官公庁・大手企業のオフィス街"]},
+ cheonggu:{n:"青丘",rd:"チョング",tag:"5号線と6号線の乗換駅",c:"#7fd08c",pts:["東大門エリアまで近い乗換駅","周辺は住宅街"]},
+ singeumho:{n:"新金湖",rd:"シングモ",tag:"金湖の住宅エリア",c:"#7fd08c",pts:["往十里と青丘の間の住宅街","落ち着いたローカルエリア"]},
+ haengdang:{n:"杏堂",rd:"ヘンダン",tag:"往十里南部の住宅エリア",c:"#7fd08c",pts:["往十里駅まで徒歩圏","周辺は住宅街と市場"]},
+ majang:{n:"馬場",rd:"マジャン",tag:"畜産物市場の街",c:"#7fd08c",pts:["馬場洞畜産物市場で韓牛グルメ","清渓川沿いのエリア"]},
+ dapsimni:{n:"踏十里",rd:"タプシムニ",tag:"骨董品市場の街",c:"#7fd08c",pts:["踏十里骨董品市場・古美術商街がある","清渓川博物館も近い"]},
+ janghanpyeong:{n:"長漢坪",rd:"チャンハンピョン",tag:"中古車市場の街",c:"#7fd08c",pts:["長漢坪中古車市場で知られる","周辺は住宅エリア"]},
+ gunja:{n:"君子",rd:"クンジャ",tag:"5号線と7号線の乗換駅",c:"#f0a35e",pts:["東部の乗り換え駅","子供大公園エリアまで近い"]},
+ achasan:{n:"峨嵯山",rd:"アチャサン",tag:"峨嵯山登山の入口",c:"#f0a35e",pts:["峨嵯山は漢江を望む軽いハイキングコース","ウォーカーヒル方面への入口"]},
+ gwangnaru:{n:"広ナル",rd:"クァンナル",tag:"漢江沿いの住宅エリア",c:"#f0a35e",pts:["広津漢江公園が近い","ウォーカーヒルホテル方面の入口"]},
+ cheonho:{n:"千戸",rd:"チョノ",tag:"江東の商業中心",c:"#f0a35e",pts:["現代百貨店千戸店など商業施設が集まる","8号線への乗り換え駅","漢江・風納土城も近い"]},
+ gusan:{n:"亀山",rd:"クサン",tag:"鷹岩ループの駅",c:"#f2b04a",pts:["6号線鷹岩ループ区間の駅","北漢山ふもとの住宅街"]},
+ dokbawi:{n:"トクパウィ",rd:"トクパウィ",tag:"北漢山登山口",c:"#f2b04a",pts:["北漢山登山の入口として使われる","静かな住宅エリア"]},
+ yeokchon:{n:"駅村",rd:"ヨクチョン",tag:"恩平の住宅エリア",c:"#f2b04a",pts:["6号線鷹岩ループ区間の駅","周辺は住宅街"]},
+ eungam:{n:"鷹岩",rd:"ウンアム",tag:"6号線ループの分岐駅",c:"#f2b04a",pts:["鷹岩ループ（単方向循環区間）の起点","恩平区の住宅エリア"]},
+ saejeol:{n:"セジョル",rd:"セジョル",tag:"恩平南部の住宅エリア",c:"#f2b04a",pts:["仏光川沿いの散策路が近い","DMCまであと2駅"]},
+ jeungsan:{n:"甑山",rd:"チュンサン",tag:"仏光川沿いの住宅街",c:"#f2b04a",pts:["仏光川の散策路が近い","ワールドカップ競技場エリアまで近い"]},
+ worldcup:{n:"ワールドカップ競技場",rd:"ワールドゥコプキョンギジャン",tag:"FCソウルの本拠地",c:"#ff8fb5",pts:["ソウルワールドカップ競技場の最寄り駅","試合・イベントの日は混雑する","ハヌル公園・平和の公園も近い"]},
+ mapogu:{n:"麻浦区庁",rd:"マポグチョン",tag:"麻浦区の行政中心",c:"#ff8fb5",pts:["麻浦区庁の最寄り駅","望遠市場エリアまで近い"]},
+ mangwon:{n:"望遠",rd:"マンウォン",tag:"望遠市場の街",c:"#ff8fb5",pts:["望遠市場はローカルグルメの名所","望遠漢江公園も近い"]},
+ sangsu:{n:"上水",rd:"サンス",tag:"弘大西側のカフェ街",c:"#ff8fb5",pts:["弘大エリア西側のカフェ・ライブハウス街","合井・弘大入口のどちらにも近い"]},
+ gwangheungchang:{n:"広興倉",rd:"クァンフンチャン",tag:"西江エリアの住宅街",c:"#ff8fb5",pts:["西江大学エリアに近い","落ち着いた住宅街"]},
+ daeheung:{n:"大興",rd:"テフン",tag:"西江大学前",c:"#c99a5b",pts:["西江大学の最寄り駅","孔徳市場まで徒歩圏"]},
+ hyochang:{n:"孝昌公園前",rd:"ヒョチャンゴンウォンアプ",tag:"孝昌公園の最寄り",c:"#8fb8d8",pts:["孝昌公園・金九記念館が近い","龍山エリアの住宅街"]},
+ noksapyeong:{n:"緑莎坪",rd:"ノクサピョン",tag:"梨泰院西側のエリア",c:"#c99a5b",pts:["経理団通り（キョンリダンキル）のカフェ街が近い","梨泰院エリアまで徒歩圏"]},
+ itaewon:{n:"梨泰院",rd:"イテウォン",tag:"国際色豊かな繁華街",c:"#c99a5b",pts:["各国料理のレストランやバーが集まる","外国人居住者が多く国際的な雰囲気","漢南エリアの高級カフェ街にも近い"]},
+ hangangjin:{n:"漢江鎮",rd:"ハンガンジン",tag:"漢南の高級エリア",c:"#c99a5b",pts:["漢南洞の高級カフェ・ブティック街","リウム美術館が近い"]},
+ beotigogae:{n:"ポティゴゲ",rd:"ポティゴゲ",tag:"南山ふもとの住宅エリア",c:"#7fd08c",pts:["南山のふもとの静かな住宅街","薬水・漢江鎮の中間地点"]},
+ jangam:{n:"長岩",rd:"チャンアム",tag:"7号線の北端",c:"#f0a35e",pts:["7号線の終点駅（議政府方面の入口）","道峰山・水落山エリアに近い"]},
+ dobongsan:{n:"道峰山",rd:"トボンサン",tag:"道峰山登山の入口",c:"#f0a35e",pts:["道峰山は岩峰で人気の登山コース","1号線への乗り換え駅"]},
+ suraksan:{n:"水落山",rd:"スラクサン",tag:"水落山登山の入口",c:"#f0a35e",pts:["水落山登山の代表的な入口","周辺は住宅エリア"]},
+ madeul:{n:"マドゥル",rd:"マドゥル",tag:"蘆原の住宅エリア",c:"#f0a35e",pts:["水落山ふもとの住宅街"]},
+ nowon:{n:"蘆原",rd:"ノウォン",tag:"ソウル北東部の中心",c:"#f0a35e",pts:["4号線への乗り換え駅","蘆原区の商業中心で飲食店が多い"]},
+ junggye:{n:"中渓",rd:"チュンゲ",tag:"蘆原の塾街",c:"#f0a35e",pts:["銀行サゴリの塾街で知られる教育エリア","周辺は大規模団地"]},
+ hagye:{n:"下渓",rd:"ハゲ",tag:"蘆原南部の住宅エリア",c:"#f0a35e",pts:["乙支病院が近い","周辺は住宅団地"]},
+ gongneung:{n:"孔陵",rd:"コンヌン",tag:"ソウル科学技術大学前",c:"#f0a35e",pts:["ソウル科学技術大学の最寄り駅","カフェ通りが若者に人気"]},
+ taereung:{n:"泰陵入口",rd:"テルンイック",tag:"泰陵・6号線乗換",c:"#f0a35e",pts:["6号線への乗り換え駅","泰陵選手村エリアに近い"]},
+ meokgol:{n:"モッコル",rd:"モッコル",tag:"中和の住宅エリア",c:"#f0a35e",pts:["中浪川沿いの住宅街"]},
+ junghwa:{n:"中和",rd:"チュンファ",tag:"中浪の住宅エリア",c:"#f0a35e",pts:["中浪川の散策路が近い住宅街"]},
+ sangbong:{n:"上鳳",rd:"サンボン",tag:"中浪の乗換ハブ",c:"#f0a35e",pts:["京義中央線・京春線への乗り換え駅","中浪区の交通拠点"]},
+ myeonmok:{n:"面牧",rd:"ミョンモク",tag:"中浪の住宅エリア",c:"#f0a35e",pts:["面牧市場のローカルな雰囲気","周辺は住宅街"]},
+ sagajeong:{n:"四佳亭",rd:"サガジョン",tag:"龍馬山ふもと",c:"#f0a35e",pts:["龍馬山登山の入口の一つ","周辺は住宅エリア"]},
+ yongmasan:{n:"龍馬山",rd:"ヨンマサン",tag:"龍馬山登山の入口",c:"#f0a35e",pts:["龍馬山は市内を望む軽登山コース","アチャサンへ尾根伝いに歩ける"]},
+ jungok:{n:"中谷",rd:"チュンゴク",tag:"広津の住宅エリア",c:"#f0a35e",pts:["国립정신건강센터が近い","子供大公園エリアまで近い"]},
+ eorini:{n:"子供大公園",rd:"オリニデゴンウォン",tag:"ソウル子供大公園",c:"#f0a35e",pts:["ソウル子供大公園（動物園・遊園地）の正門前","家族連れに人気のエリア"]},
+ ttukseomresort:{n:"トゥクソム遊園地",rd:"トゥクソムユウォンジ",tag:"漢江公園のリゾート地",c:"#f0a35e",pts:["トゥクソム漢江公園の入口","夏はプール・冬は雪そり場で賑わう"]},
+ cheongdam:{n:"清潭",rd:"チョンダム",tag:"高級ブランドの街",c:"#f0a35e",pts:["狎鴎亭ロデオ通りの高級ブランド街","美容・アートギャラリーが多い","江南エリアの高級住宅街"]},
+ gangnamgu:{n:"江南区庁",rd:"カンナムグチョン",tag:"江南区の行政中心",c:"#f0a35e",pts:["江南区庁の最寄り駅","狎鴎亭・論峴の中間地点"]},
+ hakdong:{n:"鶴洞",rd:"ハクトン",tag:"論峴家具通りの街",c:"#f0a35e",pts:["論峴洞家具通りで知られる","江南の住宅・オフィス混合エリア"]},
+ nonhyeon:{n:"論峴",rd:"ノンヒョン",tag:"江南西部の繁華街",c:"#f0a35e",pts:["飲食店やバーが多いエリア","新沙・江南のどちらにも近い"]},
+ banpo:{n:"盤浦",rd:"パンポ",tag:"盤浦漢江公園の入口",c:"#d9c25a",pts:["盤浦大橋の月光虹噴水が有名","セビッ島・漢江公園への入口"]},
+ naebang:{n:"内方",rd:"ネバン",tag:"方背のカフェ通り",c:"#d9c25a",pts:["方背カフェ通りが近い住宅エリア","高速ターミナルまで2駅"]},
+ namseong:{n:"南城",rd:"ナムソン",tag:"舎堂西部の住宅エリア",c:"#6cc7cf",pts:["総神大入口と崇実大入口の間の住宅街"]},
+ sungsildae:{n:"崇実大入口",rd:"スンシルデイック",tag:"崇実大学前",c:"#6cc7cf",pts:["崇実大学の最寄り駅","大学前の飲食店が多い"]},
+ sangdo:{n:"上道",rd:"サンド",tag:"銅雀の住宅エリア",c:"#6cc7cf",pts:["中央大学エリアに近い","落ち着いた住宅街"]},
+ jangseungbaegi:{n:"チャンスンベギ",rd:"チャンスンベギ",tag:"銅雀区庁エリア",c:"#6cc7cf",pts:["銅雀区庁の最寄り駅","周辺は住宅街と市場"]},
+ sindaebangsam:{n:"新大方サムゴリ",rd:"シンデバンサムゴリ",tag:"ポラメ公園近く",c:"#6cc7cf",pts:["ポラメ公園まで徒歩圏","周辺は住宅エリア"]},
+ boramae:{n:"ポラメ",rd:"ポラメ",tag:"ポラメ公園の最寄り",c:"#6cc7cf",pts:["ポラメ公園は市民の憩いの場","新林線への乗り換え駅"]},
+ sinpung:{n:"新豊",rd:"シンプン",tag:"永登浦南部の住宅エリア",c:"#8fb8d8",pts:["大林・新吉の中間にある住宅街"]},
+ namguro:{n:"南九老",rd:"ナムグロ",tag:"加山・九老の住宅エリア",c:"#8fb8d8",pts:["九老デジタル団地エリアに近い","周辺は住宅街"]},
+ cheolsan:{n:"鉄山",rd:"チョルサン",tag:"光明市の繁華街",c:"#8fb8d8",pts:["光明市の中心商業エリア","ロデオ通りなど飲食店が多い"]},
+ gwangmyeongsageori:{n:"光明サゴリ",rd:"クァンミョンサゴリ",tag:"光明伝統市場の街",c:"#8fb8d8",pts:["光明伝統市場が近いローカルエリア","光明市の旧市街"]},
+ cheonwang:{n:"天旺",rd:"チョヌァン",tag:"九老西部の住宅エリア",c:"#8fb8d8",pts:["天旺山のふもとの住宅街","温水まであと1駅"]},
+ onsu:{n:"温水",rd:"オンス",tag:"7号線南西の拠点",c:"#8fb8d8",pts:["1号線（京仁線）への乗り換え駅","成功会大学の最寄り"]},
+ gukhoe:{n:"国会議事堂",rd:"クケイサダン",tag:"国会議事堂の最寄り",c:"#7db8e8",pts:["国会議事堂が目の前","汝矣島の金融街エリア"]},
+ saetgang:{n:"セッカン",rd:"セッカン",tag:"汝矣島南部の駅",c:"#7db8e8",pts:["汝矣島のオフィス街南側","新林線への乗り換え駅"]},
+ nodeul:{n:"ノドゥル",rd:"ノドゥル",tag:"ノドゥル島の最寄り",c:"#8fb8d8",pts:["漢江のノドゥル島（音楽施設）への入口","漢江大橋の景色が良い"]},
+ heukseok:{n:"黒石",rd:"フクソク",tag:"中央大学前の学生街",c:"#8fb8d8",pts:["中央大学・崇実大学エリア","漢江に近い住宅街"]},
+ gubanpo:{n:"旧盤浦",rd:"クバンポ",tag:"盤浦の住宅エリア",c:"#d9c25a",pts:["盤浦住宅団地のエリア","高速ターミナルまで2駅"]},
+ sinbanpo:{n:"新盤浦",rd:"シンバンポ",tag:"盤浦の住宅エリア",c:"#d9c25a",pts:["盤浦漢江公園に近い住宅街","高速ターミナルまで1駅"]},
+ sapyeong:{n:"沙平",rd:"サピョン",tag:"盤浦・瑞草の住宅エリア",c:"#d9c25a",pts:["高速ターミナルと新論峴の間の住宅街"]},
+ sinnonhyeon:{n:"新論峴",rd:"シンノンヒョン",tag:"江南駅北側の繁華街",c:"#6cc7cf",pts:["江南駅エリアの北側。飲食店やクリニックが多い","教保タワーなどがランドマーク"]},
+ eonju:{n:"彦州",rd:"オンジュ",tag:"論峴・道谷の住宅エリア",c:"#6cc7cf",pts:["江南の高級住宅エリアの一角","周辺は落ち着いている"]},
+ seonjeongneung:{n:"宣靖陵",rd:"ソンジョンヌン",tag:"世界遺産の王陵",c:"#b9a5e8",pts:["朝鮮王陵（宣陵・靖陵）の森が駅前","水仁盆唐線への乗り換え駅"]},
+ samseongjungang:{n:"三成中央",rd:"サムソンジュンアン",tag:"COEX北側の駅",c:"#b9a5e8",pts:["COEXエリアの北側","奉恩寺まで1駅"]},
+ bongeunsa:{n:"奉恩寺",rd:"ポンウンサ",tag:"奉恩寺とCOEX",c:"#b9a5e8",pts:["千年古刹・奉恩寺が目の前","COEXモールやカジノエリアに近い"]}
+};
+function stName(id){return NAME[id]+"（"+ST[id].kk.split("|").join("")+"）"+'<span class="hg2">'+ST[id].hg+"</span>";}
+function numChip(id,line){
+  const e=(ST[id].bd||[]).find(b=>b[0]===line);
+  return e?'<span class="no" style="background:'+LINEMETA[line].c+'">'+e[1]+'</span>':"";
+}
+function stNameN(id,line){return stName(id)+numChip(id,line);}
+function stNameAll(id){return stName(id)+(ST[id].bd||[]).map(b=>numChip(id,b[0])).join("");}
+function chipsAll(id){return (ST[id].bd||[]).map(b=>numChip(id,b[0])).join("");}
+function directionOf(line,fromSt,toSt){
+  const seq=LINESTOPS[line], i=seq.indexOf(fromSt), j=seq.indexOf(toSt);
+  if(LINEMETA[line].loop){
+    const n=seq.length, cw=(j-i+n)%n, ccw=(i-j+n)%n;
+    return cw<=ccw?"内回り（時計回り）":"外回り（反時計回り）";
+  }
+  return (j>i?LINEMETA[line].ends[1]:LINEMETA[line].ends[0])+"方面";
+}
+function renderRoute(from,to){
+  const box=document.getElementById("result");
+  const marks=document.getElementById("frontmarks");
+  const rp=document.getElementById("routepath");
+  marks.innerHTML=""; rp.style.display="none";
+  if(from===to){refreshRouteHL([],[]);apply();box.innerHTML='<div class="routeband">ルート</div><div class="empty">出発駅と到着駅が同じです。別の駅を選んでください。</div>';return;}
+  const r=findRoute(from,to);
+  if(!r){refreshRouteHL([],[]);apply();box.innerHTML='<div class="routeband">ルート</div><div class="empty">ルートが見つかりませんでした。</div>';return;}
+  window.dataLayer = window.dataLayer || []; window.dataLayer.push({event: 'route_search', from_station: from, to_station: to});
+  const segs=[]; let cur=null, pts=[[ST[from].x,ST[from].y]];
+  r.steps.forEach(s=>{
+    if(s.ride){
+      if(!cur||cur.line!==s.ride.line){cur={line:s.ride.line,from:s.ride.from,to:s.ride.to,stops:1};segs.push(cur);}
+      else{cur.to=s.ride.to;cur.stops++;}
+      pts.push([ST[s.ride.to].x,ST[s.ride.to].y]);
+    }
+  });
+  const transfers=segs.slice(1).map(s=>s.from);
+  refreshRouteHL([from,to].concat(transfers),transfers);
+  const totalStops=segs.reduce((a,s)=>a+s.stops,0);
+  let html='<div class="routeband">ルート</div><div class="time">約'+r.minutes+'分</div>';
+  html+='<div class="meta">'+totalStops+'駅 ・ 乗り換え'+transfers.length+'回</div>';
+  html+='<div class="rlegend"><span class="cap">駅の見分け方</span>'
+    +'<span class="stmark dep">出発</span>'
+    +'<span class="stmark tr">乗り換え</span>'
+    +'<span class="stmark arr">到着</span></div>';
+  segs.forEach((s,i)=>{
+    const m=LINEMETA[s.line];
+    const isFirst=i===0;
+    if(isFirst){
+      html+='<div class="step"><span class="tag dep">出発</span><span class="ln" style="background:'+m.c+'">'+m.name+'</span>'
+        +'<br><span class="stmark dep">'+stNameN(s.from,s.line)+'</span>'
+        +'<br>'+directionOf(s.line,s.from,s.to)+' ・ '+s.stops+'駅（約'+(s.stops*EDGE_MIN)+'分）</div>';
+      return;
+    }
+    const prev=LINEMETA[segs[i-1].line];
+    html+='<div class="step trstep"><span class="tr">乗り換え：</span><b>'+stNameAll(s.from)+'</b><br>'
+      +prev.name+' → '+m.name+'（約'+TRANSFER_MIN+'分）'
+      +'<br><span class="ln" style="background:'+m.c+'">'+m.name+'</span>'
+      +'<br>'+directionOf(s.line,s.from,s.to)+' ・ '+s.stops+'駅（約'+(s.stops*EDGE_MIN)+'分）'
+      +'</div>';
+  });
+  const lastSeg=segs[segs.length-1];
+  html+='<div class="step"><span class="tag arr">到着</span>'
+    +'<br><span class="stmark arr">'+stNameN(to,lastSeg.line)+'</span></div>';
+  if(!transfers.length){
+    html+='<div class="tlist">乗り換えなしで到着します。</div>';
+  }
+  const ai=AREA_INFO[to];
+  if(ai){
+    html+='<div class="areabox" style="border-left-color:'+ai.c+'">'
+      +(AREA_IMG[to]?'<img class="aimg" alt="'+ai.n+'の写真" src="'+AREA_IMG[to]+'" onerror="this.remove()">':"")
+      +'<div class="ttl">到着エリア情報</div>'
+      +'<div class="an2">'+ai.n+'<span>'+ai.rd+'</span></div>'
+      +'<div class="at">'+ai.tag+'</div>'
+      +'<ul>'+ai.pts.map(p=>"<li>"+p+"</li>").join("")+'</ul></div>';
+  }
+  box.innerHTML=html;
+  rp.setAttribute("points",pts.map(p=>p.join(",")).join(" "));
+  rp.style.display="";
+  const mark=(id,color,rr,dashed)=>{
+    if(dashed){
+      const ring=document.createElementNS(NS,"circle");
+      ring.setAttribute("cx",ST[id].x);ring.setAttribute("cy",ST[id].y);ring.setAttribute("r",rr+6);
+      ring.setAttribute("fill","none");ring.setAttribute("stroke",color);ring.setAttribute("stroke-width","4");
+      ring.setAttribute("stroke-dasharray","7 5");
+      marks.appendChild(ring);
+    }
+    const c=document.createElementNS(NS,"circle");
+    c.setAttribute("cx",ST[id].x);c.setAttribute("cy",ST[id].y);c.setAttribute("r",rr);
+    c.setAttribute("fill",color);c.setAttribute("stroke","#fff");c.setAttribute("stroke-width","4");
+    marks.appendChild(c);
+  };
+  mark(from,"#1668b4",17); mark(to,"#ff3b30",17);
+  /* 乗り換えマーカーは出発マーカー（r=17）の60% = 10.2 */
+  transfers.forEach(t=>mark(t,"#ff9500",17*0.6,true));
+  const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
+  const minx=Math.min(...xs),maxx=Math.max(...xs),miny=Math.min(...ys),maxy=Math.max(...ys);
+  const bw=Math.max(maxx-minx,180), bh=Math.max(maxy-miny,180);
+  k=Math.min(VW/(bw*1.25),VH/(bh*1.25),3); k=Math.max(k,1);
+  tx=VW/2-k*(minx+maxx)/2; ty=VH/2-k*(miny+maxy)/2;
+  apply();
+}
+const fromSel=document.getElementById("from"), toSel=document.getElementById("to");
+const sortedIds=Object.keys(ST).sort((a,b)=>ST[a].kk.split("|").join("").localeCompare(ST[b].kk.split("|").join(""),"ja"));
+sortedIds.forEach(id=>{
+  const label=NAME[id]+"（"+ST[id].kk.split("|").join("")+"）"+ST[id].hg;
+  fromSel.add(new Option(label,id)); toSel.add(new Option(label,id));
+});
+fromSel.value="incheon"; toSel.value="myeongdong";
+function refreshSelNums(){
+  document.getElementById("fromNums").innerHTML='<span class="lbl2">駅番号</span>'+chipsAll(fromSel.value);
+  document.getElementById("toNums").innerHTML='<span class="lbl2">駅番号</span>'+chipsAll(toSel.value);
+}
+fromSel.addEventListener("change",refreshSelNums);
+toSel.addEventListener("change",refreshSelNums);
+fromSel.addEventListener("change",()=>renderRoute(fromSel.value,toSel.value));
+toSel.addEventListener("change",()=>renderRoute(fromSel.value,toSel.value));
+refreshSelNums();
+document.getElementById("swap").onclick=()=>{const v=fromSel.value;fromSel.value=toSel.value;toSel.value=v;refreshSelNums();renderRoute(fromSel.value,toSel.value);};
+/* 駅を探す（駅名検索→ズーム＆ハイライト） */
+const searchInput=document.getElementById("stsearch"), candlist=document.getElementById("candlist"),
+      searchact=document.getElementById("searchact"), foundname=document.getElementById("foundname");
+function hiraToKata(q){return q.replace(/[ぁ-ん]/g,ch=>String.fromCharCode(ch.charCodeAt(0)+0x60));}
+let candIds=[];
+function focusStation(id){
+  searchHL=id;
+  refreshRouteHL(lastRouteHL);
+  const s=ST[id];
+  k=2.4; tx=VW/2-k*s.x; ty=VH/2-k*s.y; apply();
+  foundname.innerHTML=stNameAll(id);
+  searchact.hidden=false;
+  searchInput.value=NAME[id]+"（"+s.kk.split("|").join("")+"）";
+  candlist.hidden=true;
+}
+function clearSearchHL(){
+  searchHL=null;
+  refreshRouteHL(lastRouteHL);
+  apply();
+  searchact.hidden=true;
+}
+function updateCand(){
+  const raw=searchInput.value.trim();
+  candIds=[];
+  if(!raw){candlist.hidden=true;return;}
+  const qs=[raw,hiraToKata(raw)];
+  candIds=sortedIds.filter(id=>qs.some(q=>NAME[id].includes(q)||ST[id].kk.split("|").join("").includes(q)||ST[id].hg.includes(q))).slice(0,12);
+  if(!candIds.length){
+    candlist.innerHTML='<div class="none">該当する駅がありません</div>';
+  }else{
+    candlist.innerHTML=candIds.map((id,i)=>'<button type="button" data-id="'+id+'"'+(i===0?' class="active"':'')+'>'+stNameAll(id)+'</button>').join("");
+    candlist.querySelectorAll("button").forEach(b=>b.addEventListener("mousedown",e=>{e.preventDefault();focusStation(b.dataset.id);}));
+  }
+  candlist.hidden=false;
+}
+searchInput.addEventListener("input",updateCand);
+searchInput.addEventListener("focus",updateCand);
+searchInput.addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&candIds.length){e.preventDefault();focusStation(candIds[0]);}
+  if(e.key==="Escape"){candlist.hidden=true;}
+});
+document.addEventListener("click",e=>{if(!e.target.closest(".searchwrap"))candlist.hidden=true;});
+document.getElementById("setfrom").onclick=()=>{if(!searchHL)return;fromSel.value=searchHL;refreshSelNums();renderRoute(fromSel.value,toSel.value);};
+document.getElementById("setto").onclick=()=>{if(!searchHL)return;toSel.value=searchHL;refreshSelNums();renderRoute(fromSel.value,toSel.value);};
+document.getElementById("clearhl").onclick=()=>{clearSearchHL();};
+renderRoute("incheon","myeongdong");
+</script>
+</body>
+</html>
